@@ -48,6 +48,8 @@ void SobMainWin::connects()
 	connect(mwin_ui -> actionHough, SIGNAL(triggered ( bool ) ), this, SLOT(Hough_tm(bool)) );
 	connect(mwin_ui -> actionCanny, SIGNAL(triggered ( bool ) ), this, SLOT(Canny_ed(bool)) );
 
+	connect(mwin_ui -> actionGo, SIGNAL(triggered ( bool ) ), this, SLOT(Do_auto(bool)) );
+
 	connect(mwin_ui -> verticalSlider, SIGNAL( sliderMoved ( int ) ), this, SLOT(Set_gamma_lbl(int)) );
 }
 
@@ -91,6 +93,8 @@ void SobMainWin::Do_enables( bool e )
 	//mwin_ui -> verticalSlider -> setEnabled(e);
 	mwin_ui -> checkBox -> setEnabled(e);
 	mwin_ui -> checkBox_2 -> setEnabled(e);
+
+	mwin_ui -> actionGo -> setEnabled(e);
 }
 
 void SobMainWin::Load_file( bool )
@@ -298,5 +302,16 @@ void SobMainWin::Disp_grad( bool )
 			Qt::SmoothTransformation));
 
 	wgt -> exec();
+
+}
+
+void SobMainWin::Do_auto( bool )
+{
+	To_gray(false);
+	Sobel_op(false);
+	Avg_blur(false);
+	Otsus_bin(false);
+	Median_fr(false);Median_fr(false);Median_fr(false);
+	Disp_grad(false);
 
 }

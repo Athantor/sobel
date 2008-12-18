@@ -66,10 +66,10 @@
    <widget class="QWidget" name="verticalLayoutWidget" >
     <property name="geometry" >
      <rect>
-      <x>11</x>
-      <y>11</y>
-      <width>62</width>
-      <height>534</height>
+      <x>0</x>
+      <y>0</y>
+      <width>41</width>
+      <height>511</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3" >
@@ -247,6 +247,18 @@
    <addaction name="menuOp_2" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
+  <widget class="QToolBar" name="toolBar" >
+   <property name="windowTitle" >
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea" >
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionGo" />
+  </widget>
   <action name="actionWczytaj" >
    <property name="text" >
     <string>Wczytaj</string>
@@ -365,6 +377,14 @@
    </property>
    <property name="text" >
     <string>Canny</string>
+   </property>
+  </action>
+  <action name="actionGo" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>Go!</string>
    </property>
   </action>
  </widget>
