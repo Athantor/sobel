@@ -448,9 +448,9 @@ void SobMainWin::Gauss_blur( bool )
 	//		}
 	//	}
 
-	double gknl[][5] = { { 2, 4, 5, 4, 2 }, { 4, 9, 12, 9, 4 }, { 5, 12, 15,
+	uint gknl[][5] = { { 2, 4, 5, 4, 2 }, { 4, 9, 12, 9, 4 }, { 5, 12, 15,
 			12, 5 }, { 2, 4, 5, 4, 2 }, { 4, 9, 12, 9, 4 } };
-	const double sum = 159;
+	const uint sum = 159;
 
 	int px = 0;
 	QImage tmp(*out_im);
