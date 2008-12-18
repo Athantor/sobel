@@ -247,8 +247,8 @@ void SobMainWin::Disp_grad( bool )
 	for(int i = 1; i < ygdtli -> width(); ++i)
 	{
 		//std::cout << "*" ;
-		gy.drawLine(i - 1, 0, i, (g -> get<1> ())[i] / (my * 1.0)
-				* ygdtli -> height());
+		gy.drawLine(i - 1, 0, i, static_cast<int>((g -> get<1> ())[i] / (my * 1.0)
+				* ygdtli -> height()));
 	}
 
 	gy.end();
