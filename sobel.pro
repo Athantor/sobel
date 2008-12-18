@@ -6,8 +6,8 @@ TEMPLATE = app
 TARGET = 
 DEPENDPATH += .
 INCLUDEPATH += .
-QMAKE_CXX += -ggdb3
-QMAKE_CXXFLAGS_THREAD = -O0
+QMAKE_CXX += # -std=gnu++98
+QMAKE_CXXFLAGS_DEBUG += -O0 -Wall -Wextra -g3 -ggdb3 
 
 # Input
 HEADERS += SobelApp.hh SobMainWin.hh
