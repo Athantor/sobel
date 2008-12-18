@@ -370,7 +370,7 @@ void SobMainWin::Avg_blur( bool )
 	tmr.start();
 
 	uint sum = 0;
-	const uint pct = (9 * 255) * 0.85;
+	const double pct = (9 * 255) * 0.85;
 	uchar curr = 0;
 
 	QImage tmpim(*out_im);
