@@ -62,9 +62,9 @@ class SobMainWin: public QMainWindow
 
 		typedef boost::shared_array<ulong> gradarr_t;
 		typedef std::pair<boost::shared_ptr<QImage>, boost::shared_ptr<QImage> >
-				igrads_t;
+				igrads_t; //x-grad img, y-grad img
 		typedef boost::tuple<gradarr_t, gradarr_t, gradarr_t, uint, igrads_t>
-				grad_t;
+				grad_t; //grad-x, grad-y, x-max[], ymax, grad images
 
 	private:
 		std::auto_ptr<Ui::MainWindow> mwin_ui;
