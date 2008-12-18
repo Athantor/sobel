@@ -35,7 +35,7 @@
 #include <boost/shared_array.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <boost/foreach.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 
 #include <QMainWindow>
 #include <QImage>
@@ -63,8 +63,8 @@ class SobMainWin: public QMainWindow
 		typedef boost::shared_array<ulong> gradarr_t;
 		typedef std::pair<boost::shared_ptr<QImage>, boost::shared_ptr<QImage> >
 				igrads_t; //x-grad img, y-grad img
-		typedef boost::tuple<gradarr_t, gradarr_t, gradarr_t, uint, igrads_t>
-				grad_t; //grad-x, grad-y, x-max[], ymax, grad images
+		typedef boost::tuple<gradarr_t, gradarr_t, gradarr_t, uint, igrads_t, uint>
+				grad_t; //grad-x, grad-y, x-max[], ymax, grad images, eye area tol. hgt
 
 	private:
 		std::auto_ptr<Ui::MainWindow> mwin_ui;

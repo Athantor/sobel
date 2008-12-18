@@ -683,10 +683,10 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 	gradarr_t gt_y(new gradarr_t::element_type[out_im -> width()]);
 	gradarr_t mx(new gradarr_t::element_type[3]);
 	igrads_t igt;
-	boost::shared_ptr<grad_t> rp(new grad_t(gt_x, gt_y, mx, 0, igt));
+	boost::shared_ptr<grad_t> rp(new grad_t(gt_x, gt_y, mx, 0, igt, 0));
 
 	const uchar TOLPCT = 20; //tolerance above and below where eyes shall be
-	const int EAHGT = static_cast<int>( ( (out_im -> height()) / (TOLPCT / 100.0) )); //eye area height
+	rp -> get<5>() = static_cast<int>( ( (out_im -> height()) * (TOLPCT / 100.0) )); //eye area height
 
 	std::fill(gt_x.get(), gt_x.get() + out_im -> height(), 0);
 	std::fill(gt_y.get(), gt_y.get() + out_im -> width(), 0);
@@ -795,19 +795,24 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 */
 	//-----------
 
+
+
 	int maxy = 0;
-	for(int y = 0; y < out_im -> width() - 1 / 3; y++)
+	int down = mx[0] - rp -> get<5>();
+	int up = mx[0] + rp -> get<5>();
+
+	for(int y = 0; y < out_im -> width() - 1 ; y++)
 	{
 		gt_y[y] = 0;
 		for(int x = 0; x < out_im -> height(); x++)
 		{
-			if( (x > ((signed)mx[0] - EAHGT) ) and (x < ((signed)mx[0] + EAHGT) ) )
+			if( (x >  down) and (x < up ) )
 			{
 				gt_y[y] += qRed(ygrad.pixel(y, x)) * 2 ;
 			}
 			else
 			{
-				gt_y[y] += qRed(ygrad.pixel(y, x)) * 0.8;
+				gt_y[y] += qRed(ygrad.pixel(y, x)) * 0.4;
 			}
 
 		}
