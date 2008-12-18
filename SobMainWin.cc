@@ -228,7 +228,7 @@ void SobMainWin::Disp_grad( bool )
 	//-------------
 
 	long mx = g -> get<0> ()[g -> get<2> ()[0]];
-	long my = g -> get<1> ()[g -> get<3> ()];
+	long my = g -> get<1> ()[g -> get<3> ()[0]];
 
 	QPainter gx(xgdtli.get()), gy(ygdtli.get());
 	/**/
@@ -271,9 +271,14 @@ void SobMainWin::Disp_grad( bool )
 	qp.drawLine(0, g -> get<2> ()[1], tmp.width(), g -> get<2> ()[1]);
 	qp.drawLine(0, g -> get<2> ()[2], tmp.width(), g -> get<2> ()[2]);
 
-	qp.setPen("blue");
-	qp.setPen(Qt::SolidLine);
-	qp.drawLine(g -> get<3> (), 0, g -> get<3> (), tmp.height());
+	qp.setPen(QPen(QColor("blue"), 1.5, Qt::SolidLine));
+	qp.drawLine(g -> get<3> ()[0], 0, g -> get<3> ()[0], tmp.height());
+	qp.drawLine(g -> get<3> ()[2], 0, g -> get<3> ()[2], tmp.height());
+
+	qp.setPen(QPen(QColor("blue"), 1.5, Qt::DotLine));
+	qp.drawLine(g -> get<3> ()[1], 0, g -> get<3> ()[1], tmp.height());
+	qp.drawLine(g -> get<3> ()[3], 0, g -> get<3> ()[3], tmp.height());
+
 
 	imgl -> setPixmap(QPixmap::fromImage(tmp.scaled(imgl -> size(),
 			Qt::KeepAspectRatio, Qt::SmoothTransformation)));
