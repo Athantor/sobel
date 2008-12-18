@@ -235,8 +235,8 @@ void SobMainWin::Disp_grad( bool )
 	gx.setPen("black");
 	for(int i = 1; i < xgdtli -> height(); ++i)
 	{
-		gx.drawLine(0, i - 1, (g -> get<0> ())[i] / (mx * 1.0)
-				* xgdtli -> width(), i);
+		gx.drawLine(0, i - 1, static_cast<int>((g -> get<0> ())[i] / (mx * 1.0)
+				* xgdtli -> width()), i);
 	}
 	//     gx.setPen("red");
 	//     gx.drawRect(0, g -> get<2>() - 5, xgdtli -> width(), g -> get<2>() + 5);
