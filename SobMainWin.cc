@@ -181,7 +181,7 @@ void SobMainWin::Set_gamma_lbl( int v )
 	float gamma = v / 10.0;
 	mwin_ui -> label_3 -> setText(QString::number(gamma));
 
-	Gamma(v);
+//	Gamma(v);
 	Display_imgs();
 
 }

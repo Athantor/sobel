@@ -79,7 +79,7 @@ class SobMainWin: public QMainWindow
 		void connects();
 
 		QRgb To_gray( QRgb );
-		void Gamma( float );
+		//void Gamma( float );
 		void Smooth();
 		//void Binarize();
 

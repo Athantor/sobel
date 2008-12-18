@@ -48,7 +48,7 @@ void SobMainWin::To_gray( bool )
 
 }
 
-void SobMainWin::Gamma( float f )
+/*void SobMainWin::Gamma( float f )
 {
 
 	QTime tmr;
@@ -72,7 +72,7 @@ void SobMainWin::Gamma( float f )
 	Pss(tmr.elapsed());
 	Display_imgs();
 
-}
+}*/
 
 void SobMainWin::Smooth()
 {
@@ -219,7 +219,7 @@ void SobMainWin::Otsus_bin( bool )
 
 void SobMainWin::Lame_bin( bool )
 {
-
+	std::cerr << "FAIL" << std::endl;
 	QTime tmr;
 	tmr.start();
 
@@ -777,19 +777,19 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 	}
 
 	/* 1/2 */
-	for(int i = 0; i < out_im -> height() / 2; i++)
+	/*for(int i = 0; i < out_im -> height() / 2; i++)
 	{
 		if((i < mx[0] - 10) and (i > mx[0] - 10))
 			mx[1] = (gt_x[mx[1]] < gt_x[i]) ? i : mx[1];
 	}
 
-	/* 1 */
+	 1
 	for(int i = 0; i < out_im -> height(); i++)
 	{
 		mx[2] = (gt_x[mx[2]] < gt_x[2]) and (gt_x[i] != mx[0]) and (gt_x[i]
 				!= mx[1]) ? i : mx[2];
 	}
-
+*/
 	//-----------
 
 	int maxy = 0;
