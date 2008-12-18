@@ -319,11 +319,11 @@ void SobMainWin::Sobel_op( bool )
 
 			if((y == 0) or (y + 1 >= in_im -> height()))
 			{
-				sum = 255;
+				sum = 0;
 			}
 			else if((x == 0) or (x + 1 >= in_im -> width()))
 			{
-				sum = 255;
+				sum = 0;
 			}
 			else
 			{
@@ -772,9 +772,9 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 	//--------
 
 
-	/* 2/5 - 4/5  */
+	/* 2/4  */
 
-	for(int i = out_im -> height() / 5 * 2; i < out_im -> height() / 5 * 4; i++)
+	for(int i = out_im -> height() / 4 ; i < out_im -> height() / 4 * 2; i++)
 	{
 		mx[0] = gt_x[mx[0]] < gt_x[i] ? i : mx[0];
 	}
