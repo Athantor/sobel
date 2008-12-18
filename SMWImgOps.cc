@@ -556,7 +556,7 @@ void SobMainWin::Hough_tm( bool )
 	acc_t acc(out_im -> width(), std::vector<uint>(out_im -> height(), 0));
 	res_t res(20, boost::make_tuple(0, 0, 0)); // x, y, val
 
-	int x0, y0;
+	double x0, y0;
 	double rth;
 
 	uint rad = mwin_ui -> spinBox -> value();
@@ -605,7 +605,7 @@ void SobMainWin::Hough_tm( bool )
 	{
 		for(int x = 0; x < out_im -> width(); x++)
 		{
-			acc[x][y] = (acc[x][y] / (max * 1.0)) * 255.0;
+			acc[x][y] = static_cast<acc_t::value_type::value_type>( (acc[x][y] / (max * 1.0)) * 255.0 );
 		}
 	}
 
