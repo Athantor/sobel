@@ -36,18 +36,6 @@ class SobelApp : public QApplication
 
     private:
 	std::auto_ptr<SobMainWin> mwin;
-// 	std::auto_ptr<QImage> in_im;
-// 	std::auto_ptr<QImage> out_im;
-// 	QString fn;
-//
-// 	void Load_file();
-// 	void Sobel_op();
-// 	void To_gray();
-// 	QRgb To_gray(QRgb);
-// 	void Gamma(float);
-// 	void Smooth();
-// 	void Binarize();
-// 	bool Save_file();
 };
 
 #endif // _SobelApp_h_
