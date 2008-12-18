@@ -685,6 +685,9 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 	igrads_t igt;
 	boost::shared_ptr<grad_t> rp(new grad_t(gt_x, gt_y, mx, 0, igt));
 
+	const uchar TOLPCT = 20; //tolerance above and below where eyes shall be
+	const int EAHGT = static_cast<int>( ( (out_im -> height()) / (TOLPCT / 100.0) )); //eye area height
+
 	std::fill(gt_x.get(), gt_x.get() + out_im -> height(), 0);
 	std::fill(gt_y.get(), gt_y.get() + out_im -> width(), 0);
 	std::fill(mx.get(), mx.get() + 3, 0);
@@ -769,9 +772,9 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 	//--------
 
 
-	/* 2/4 */
+	/* 2/5 - 4/5  */
 
-	for(int i = out_im -> height() / 4; i < out_im -> height() / 4 * 2; i++)
+	for(int i = out_im -> height() / 5 * 2; i < out_im -> height() / 5 * 4; i++)
 	{
 		mx[0] = gt_x[mx[0]] < gt_x[i] ? i : mx[0];
 	}
@@ -793,13 +796,20 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 	//-----------
 
 	int maxy = 0;
-	for(int y = 0; y < out_im -> width() - 1; y++)
+	for(int y = 0; y < out_im -> width() - 1 / 3; y++)
 	{
 		gt_y[y] = 0;
 		for(int x = 0; x < out_im -> height(); x++)
 		{
-			gt_y[y] += x == maxy ? qRed(ygrad.pixel(y, x)) * 2 : qRed(
-					ygrad.pixel(y, x));
+			if( (x > ((signed)mx[0] - EAHGT) ) and (x < ((signed)mx[0] + EAHGT) ) )
+			{
+				gt_y[y] += qRed(ygrad.pixel(y, x)) * 2 ;
+			}
+			else
+			{
+				gt_y[y] += qRed(ygrad.pixel(y, x)) * 0.8;
+			}
+
 		}
 
 		//std::cout << gt_y[maxy] << " " << gt_y[y] << " " << (gt_y[maxy] < gt_y[y]) << " " << maxy <<std::endl;
@@ -814,18 +824,6 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 	rp -> get<4> ().first.reset(new QImage(xgrad));
 	rp -> get<4> ().second.reset(new QImage(ygrad));
 
-	//     QImage tmp(*out_im);
-	//     QPainter qp(&tmp);
-	//     qp.setPen("red");
-	//     qp.drawLine(0, maxx, out_im -> width(), maxx);
-	//
-	//     qp.setPen("blue");
-	//     qp.drawLine(maxy, 0, maxy, out_im -> height());
-
-	//std::cout << maxx << ", " << maxy << std::endl;
-	//     out_im.reset(new QImage(tmp));
-	//     Display_imgs();
-	// Disp_grad(0);
 
 	return rp;
 
