@@ -28,18 +28,18 @@
 
 #include <SobMainWin.hh>
 
-class SobelApp : public QApplication 
+class SobelApp : public QApplication
 {
   public:
     SobelApp( int, char ** );
     ~SobelApp();
-    
+
     private:
 	std::auto_ptr<SobMainWin> mwin;
 // 	std::auto_ptr<QImage> in_im;
 // 	std::auto_ptr<QImage> out_im;
 // 	QString fn;
-// 	
+//
 // 	void Load_file();
 // 	void Sobel_op();
 // 	void To_gray();
