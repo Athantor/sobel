@@ -47,6 +47,7 @@
 #include <QDir>
 #include <QColor>
 #include <QTime>
+#include <QBrush>
 
 #include <QPainter>
 

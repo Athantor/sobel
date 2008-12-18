@@ -257,6 +257,13 @@ void SobMainWin::Disp_grad( bool )
 
 	QImage tmp(*out_im);
 	QPainter qp(&tmp);
+
+	qp.setPen("red");
+	qp.setBrush(QBrush(QColor("red")));
+	qp.setOpacity(0.2);
+	qp.drawRect(0, g -> get<2> ()[0] - (g -> get<5> ()), tmp.width(), g -> get<5> () *2 );
+	qp.setOpacity(1);
+
 	qp.setPen("red");
 	qp.drawLine(0, g -> get<2> ()[0], tmp.width(), g -> get<2> ()[0]);
 
@@ -267,6 +274,9 @@ void SobMainWin::Disp_grad( bool )
 	qp.setPen("blue");
 	qp.setPen(Qt::SolidLine);
 	qp.drawLine(g -> get<3> (), 0, g -> get<3> (), tmp.height());
+
+
+	std::cout << (g -> get<5> ()) << " " << (g -> get<2> ()[0]) << " " <<  tmp.height() << std::endl;
 
 	imgl -> setPixmap(QPixmap::fromImage(tmp.scaled(imgl -> size(),
 			Qt::KeepAspectRatio, Qt::SmoothTransformation)));

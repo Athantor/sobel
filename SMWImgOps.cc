@@ -685,7 +685,7 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 	igrads_t igt;
 	boost::shared_ptr<grad_t> rp(new grad_t(gt_x, gt_y, mx, 0, igt, 0));
 
-	const uchar TOLPCT = 20; //tolerance above and below where eyes shall be
+	const uchar TOLPCT = 5; //tolerance above and below where eyes shall be
 	rp -> get<5>() = static_cast<int>( ( (out_im -> height()) * (TOLPCT / 100.0) )); //eye area height
 
 	std::fill(gt_x.get(), gt_x.get() + out_im -> height(), 0);
