@@ -20,10 +20,6 @@
 
 SobelApp::SobelApp(int c, char ** v) : QApplication(c, v), mwin(new SobMainWin()) /*in_im(new QImage()), out_im(0)*/
 {
-//     Load_file();
-//     Sobel_op();
-//   //  Binarize();
-//     Save_file();
 
     mwin -> show();
 
