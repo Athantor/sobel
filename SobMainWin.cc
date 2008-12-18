@@ -35,21 +35,20 @@ SobMainWin::~SobMainWin()
 
 void SobMainWin::connects()
 {
-	connect( mwin_ui -> actionWczytaj, SIGNAL(triggered ( bool ) ), this, SLOT(Load_file(bool)) );
-	connect( mwin_ui -> actionZapisz, SIGNAL(triggered ( bool ) ), this, SLOT(Save_file(bool)) );
-	connect( mwin_ui -> actionDajesz, SIGNAL(triggered ( bool ) ), this, SLOT(Sobel_op(bool)) );
-	connect( mwin_ui -> actionSzaro, SIGNAL(triggered ( bool ) ), this, SLOT(To_gray(bool)) );
-	connect( mwin_ui -> actionGradient, SIGNAL(triggered ( bool ) ), this, SLOT(Disp_grad(bool)) );
-	connect( mwin_ui -> actionAvg_blur , SIGNAL(triggered ( bool ) ), this, SLOT(Avg_blur(bool)) );
-	connect( mwin_ui -> actionGauss , SIGNAL(triggered ( bool ) ), this, SLOT(Gauss_blur(bool)) );
-	connect( mwin_ui -> actionFiltr_medianowy , SIGNAL(triggered ( bool ) ), this, SLOT(Median_fr(bool)) );
-	connect( mwin_ui -> actionBinaryzacja_2, SIGNAL(triggered ( bool ) ), this, SLOT(Otsus_bin(bool)) );
-	connect( mwin_ui -> actionLame, SIGNAL(triggered ( bool ) ), this, SLOT(Lame_bin(bool)) );
-	connect( mwin_ui -> actionHough, SIGNAL(triggered ( bool ) ), this, SLOT(Hough_tm(bool)) );
-	connect( mwin_ui -> actionCanny, SIGNAL(triggered ( bool ) ), this, SLOT(Canny_ed(bool)) );
+	connect(mwin_ui -> actionWczytaj, SIGNAL(triggered ( bool ) ), this, SLOT(Load_file(bool)) );
+	connect(mwin_ui -> actionZapisz, SIGNAL(triggered ( bool ) ), this, SLOT(Save_file(bool)) );
+	connect(mwin_ui -> actionDajesz, SIGNAL(triggered ( bool ) ), this, SLOT(Sobel_op(bool)) );
+	connect(mwin_ui -> actionSzaro, SIGNAL(triggered ( bool ) ), this, SLOT(To_gray(bool)) );
+	connect(mwin_ui -> actionGradient, SIGNAL(triggered ( bool ) ), this, SLOT(Disp_grad(bool)) );
+	connect(mwin_ui -> actionAvg_blur, SIGNAL(triggered ( bool ) ), this, SLOT(Avg_blur(bool)) );
+	connect(mwin_ui -> actionGauss, SIGNAL(triggered ( bool ) ), this, SLOT(Gauss_blur(bool)) );
+	connect(mwin_ui -> actionFiltr_medianowy, SIGNAL(triggered ( bool ) ), this, SLOT(Median_fr(bool)) );
+	connect(mwin_ui -> actionBinaryzacja_2, SIGNAL(triggered ( bool ) ), this, SLOT(Otsus_bin(bool)) );
+	connect(mwin_ui -> actionLame, SIGNAL(triggered ( bool ) ), this, SLOT(Lame_bin(bool)) );
+	connect(mwin_ui -> actionHough, SIGNAL(triggered ( bool ) ), this, SLOT(Hough_tm(bool)) );
+	connect(mwin_ui -> actionCanny, SIGNAL(triggered ( bool ) ), this, SLOT(Canny_ed(bool)) );
 
-
-	connect( mwin_ui -> verticalSlider, SIGNAL( sliderMoved ( int ) ), this, SLOT(Set_gamma_lbl(int)) );
+	connect(mwin_ui -> verticalSlider, SIGNAL( sliderMoved ( int ) ), this, SLOT(Set_gamma_lbl(int)) );
 }
 
 void SobMainWin::Do_ops( bool )
@@ -136,6 +135,8 @@ void SobMainWin::Load_file( bool )
 
 	statusBar() -> showMessage(fn + " [fmt:" + QString::number(
 			in_im -> format()) + "]", 5000);
+	setWindowTitle(fn + " [" + QString::number(in_im -> width())
+			+ QString::fromUtf8("×") + QString::number(in_im -> height()) + "]");
 
 	//     std::cout << in_im -> format() << std::endl;
 }
@@ -181,7 +182,7 @@ void SobMainWin::Set_gamma_lbl( int v )
 	float gamma = v / 10.0;
 	mwin_ui -> label_3 -> setText(QString::number(gamma));
 
-//	Gamma(v);
+	//	Gamma(v);
 	Display_imgs();
 
 }
@@ -235,8 +236,8 @@ void SobMainWin::Disp_grad( bool )
 	gx.setPen("black");
 	for(int i = 1; i < xgdtli -> height(); ++i)
 	{
-		gx.drawLine(0, i - 1, static_cast<int>((g -> get<0> ())[i] / (mx * 1.0)
-				* xgdtli -> width()), i);
+		gx.drawLine(0, i - 1, static_cast<int> ((g -> get<0> ())[i]
+				/ (mx * 1.0) * xgdtli -> width()), i);
 	}
 	//     gx.setPen("red");
 	//     gx.drawRect(0, g -> get<2>() - 5, xgdtli -> width(), g -> get<2>() + 5);
@@ -247,8 +248,8 @@ void SobMainWin::Disp_grad( bool )
 	for(int i = 1; i < ygdtli -> width(); ++i)
 	{
 		//std::cout << "*" ;
-		gy.drawLine(i - 1, 0, i, static_cast<int>((g -> get<1> ())[i] / (my * 1.0)
-				* ygdtli -> height()));
+		gy.drawLine(i - 1, 0, i, static_cast<int> ((g -> get<1> ())[i] / (my
+				* 1.0) * ygdtli -> height()));
 	}
 
 	gy.end();
@@ -261,7 +262,8 @@ void SobMainWin::Disp_grad( bool )
 	qp.setPen("red");
 	qp.setBrush(QBrush(QColor("red")));
 	qp.setOpacity(0.2);
-	qp.drawRect(0, g -> get<2> ()[0] - (g -> get<5> ()), tmp.width(), g -> get<5> () *2 );
+	qp.drawRect(0, g -> get<2> ()[0] - (g -> get<5> ()), tmp.width(), g -> get<
+			5> () * 2);
 	qp.setOpacity(1);
 
 	qp.setPen("red");
@@ -278,7 +280,6 @@ void SobMainWin::Disp_grad( bool )
 	qp.setPen(QPen(QColor("blue"), 1.5, Qt::DotLine));
 	qp.drawLine(g -> get<3> ()[1], 0, g -> get<3> ()[1], tmp.height());
 	qp.drawLine(g -> get<3> ()[3], 0, g -> get<3> ()[3], tmp.height());
-
 
 	imgl -> setPixmap(QPixmap::fromImage(tmp.scaled(imgl -> size(),
 			Qt::KeepAspectRatio, Qt::SmoothTransformation)));
