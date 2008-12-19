@@ -44,7 +44,8 @@ void SobMainWin::To_gray( bool d )
 	out_im.reset(new QImage(*in_im));
 	Pss(tmr.elapsed());
 
-	if(!d) Display_imgs();
+	if(!d)
+		Display_imgs();
 
 }
 
@@ -211,7 +212,8 @@ void SobMainWin::Otsus_bin( bool d )
 	(this -> out_im).reset(new QImage(*out_im));
 
 	Pss(tmr.elapsed(), "[thd:" + QString::number(thd) + "]");
-	if(!d) Display_imgs();
+	if(!d)
+		Display_imgs();
 	//statusBar() -> showMessage("[thd:" + QString::number(thd) + "]", 5000);
 	bin = true;
 
@@ -283,7 +285,8 @@ void SobMainWin::Lame_bin( bool d )
 	(this -> out_im).reset(new QImage(*out_im));
 
 	Pss(tmr.elapsed());
-	if(!d) Display_imgs();
+	if(!d)
+		Display_imgs();
 	statusBar() -> showMessage("[thd:" + QString::number(thd) + "]", 5000);
 	bin = true;
 
@@ -359,7 +362,8 @@ void SobMainWin::Sobel_op( bool d )
 	}
 
 	Pss(tmr.elapsed());
-	if(!d) Display_imgs();
+	if(!d)
+		Display_imgs();
 	sobel = true;
 }
 
@@ -414,7 +418,8 @@ void SobMainWin::Avg_blur( bool d )
 
 	out_im.reset(new QImage(tmpim));
 	Pss(tmr.elapsed());
-	if(!d) Display_imgs();
+	if(!d)
+		Display_imgs();
 
 }
 
@@ -487,7 +492,8 @@ void SobMainWin::Gauss_blur( bool d )
 	//delete[] gknl;
 
 	out_im.reset(new QImage(tmp));
-	if(!d) Display_imgs();
+	if(!d)
+		Display_imgs();
 	Pss(tmr.elapsed());
 }
 
@@ -541,7 +547,8 @@ void SobMainWin::Median_fr( bool d )
 
 	out_im.reset(new QImage(tmpim));
 	Pss(tmr.elapsed());
-	if(!d) Display_imgs();
+	if(!d)
+		Display_imgs();
 }
 
 void SobMainWin::Hough_tm( bool d )
@@ -675,7 +682,8 @@ void SobMainWin::Hough_tm( bool d )
 	qp.end();
 
 	out_im.reset(new QImage(tmpi));
-	if(!d) Display_imgs();
+	if(!d)
+		Display_imgs();
 }
 
 boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
@@ -689,7 +697,7 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 	gradarr_t mx(new gradarr_t::element_type[6]);
 	gradarr_t my(new gradarr_t::element_type[4]);
 	igrads_t igt;
-	boost::shared_ptr<grad_t> rp(new grad_t(gt_x, gt_y, mx, my, igt, 0));
+	boost::shared_ptr<grad_t> rp(new grad_t(gt_x, gt_y, mx, my, igt, 0, 0));
 
 	const uchar TOLPCT = 5; //tolerance above and below where eyes shall be
 	rp -> get<5> () = static_cast<int> (((out_im -> height())
@@ -811,112 +819,133 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 		maxy = gt_y[maxy] < gt_y[y] ? y : maxy;
 	}
 
-	const int YWDT = static_cast<int> (((out_im -> width()) * (20 / 100.0)));
-	int ctr = YWDT;
-	int ctr2 = YWDT;
-	gradarr_t::element_type max1, max2;
-	max1 = max2 = 0;
-	for(int i = out_im -> width() / 2; i >= 0; --i)
-	{
-		if(ctr < 1)
-		{
-			if(ctr2 < 1)
-			{
-				break;
-			}
-			else
-			{
-				if(gt_y[i] > max2)
-				{
-					my[1] = i;
-					max2 = gt_y[i];
-				}
-				else
-				{
-					ctr2--;
-				}
-			}
-		}
-		else
-		{
-			if(gt_y[i] > max1)
-			{
-				my[0] = i;
-				max1 = gt_y[i];
-			}
-			else
-			{
-				ctr--;
-			}
-		}
-	}
+	const int YWDT = static_cast<int> (((out_im -> width()) * (9.5 / 100.0)));
+	//int ctr = YWDT;
+	//int ctr2 = YWDT;
+	//gradarr_t::element_type max1, max2;
+	/*max1 = max2 = 0;
+	 for(int i = out_im -> width() / 2 -1 ; i >= 0; --i)
+	 {
+	 if(ctr < 1)
+	 {
+	 if(ctr2 < 1)
+	 {
+	 break;
+	 }
+	 else
+	 {
+	 if(gt_y[i] > max2)
+	 {
+	 my[1] = i;
+	 max2 = gt_y[i];
+	 ctr2++;
+	 }
+	 else
+	 {
+	 ctr2--;
+	 }
+	 }
+	 }
+	 else
+	 {
+	 if(gt_y[i] > max1)
+	 {
+	 my[0] = i;
+	 max1 = gt_y[i];
+	 ctr++;
+	 }
+	 else
+	 {
+	 ctr--;
+	 }
+	 }
+	 }*/
 
 	//--------
 
-	ctr = ctr2 = YWDT;
-	max1 = max2 = 0;
-	for(int i = out_im -> width() / 2 + 1; i < out_im -> width(); i++)
-	{
-		if(ctr < 1)
-		{
-			if(ctr2 < 1)
-			{
-				break;
-			}
-			else
-			{
-				if(gt_y[i] > max2)
-				{
-					my[3] = i;
-					max2 = gt_y[i];
-					ctr2++;
-				}
-				else
-				{
-					ctr2--;
-				}
-			}
-		}
-		else
-		{
-			if(gt_y[i] > max1)
-			{
-				my[2] = i;
-				max1 = gt_y[i];
-				ctr++;
-			}
-			else
-			{
-				ctr--;
-			}
-		}
-	}
+	//ctr = ctr2 = YWDT;
+	//max1 = max2 = 0;
+	/*for(int i = out_im -> width() / 2 + 1; i < out_im -> width(); i++)
+	 {
+	 if(ctr < 1)
+	 {
+	 if(ctr2 < 1)
+	 {
+	 break;
+	 }
+	 else
+	 {
+	 if(gt_y[i] > max2)
+	 {
+	 my[3] = i;
+	 max2 = gt_y[i];
+	 ctr2++;
+	 }
+	 else
+	 {
+	 ctr2--;
+	 }
+	 }
+	 }
+	 else
+	 {
+	 if(gt_y[i] > max1)
+	 {
+	 my[2] = i;
+	 max1 = gt_y[i];
+	 ctr++;
+	 }
+	 else
+	 {
+	 ctr--;
+	 }
+	 }
+	 }*/
+
+	my[1] = std::max_element(gt_y.get() + 5, gt_y.get() + (out_im -> width()
+			/ 3) + 1) - gt_y.get();
+	my[3] = std::max_element((gt_y.get() + (out_im -> width() - 5))
+			- (out_im -> width() / 3) - 1, (gt_y.get()
+			+ (out_im -> width() - 5))) - gt_y.get();
+
+	const int centr = my[1] + (my[3] - my[1]) / 2;
+
+	my[0] = std::max_element(gt_y.get() + my[1] + YWDT, gt_y.get() + centr
+			- YWDT / 2) - gt_y.get();
+	my[2] = std::max_element(gt_y.get() + centr + YWDT / 2, gt_y.get() + my[3]
+			- YWDT) - gt_y.get();
 
 	//----------------
 	// x
 	//---------------
 
-	ctr = ctr2 = rp -> get<5> ();
-	max1 = max2 = 0;
-	for(int i = mx[0] - static_cast<int> ((ctr - (ctr / 1.5))); i >= 0; --i)
-	{
-		if(!ctr)
-			break;
+	//ctr = ctr2 = rp -> get<5> ();
+	//max1 = max2 = 0;
+	/*
+	 for(int i = mx[0] - static_cast<int> ((ctr - (ctr / 1.5))); i >= 0; --i)
+	 {
+	 if(!ctr)
+	 break;
 
-		if(gt_x[i] > max1)
-		{
-			mx[1] = i;
-			max1 = gt_x[i];
-			ctr++;
-		}
-		else
-		{
-			ctr--;
-		}
+	 if(gt_x[i] > max1)
+	 {
+	 mx[1] = i;
+	 max1 = gt_x[i];
+	 ctr++;
+	 }
+	 else
+	 {
+	 ctr--;
+	 }
 
-	}
+	 }
+	 */
+	mx[1] = std::max_element(gt_x.get() + (mx[0] - (rp -> get<5> ()) * 2),
+			gt_x.get() + mx[0] - static_cast<int> ((rp -> get<5> ()) * 0.8))
+			- gt_x.get();
 
-	mx[2] = std::max_element(gt_x.get(), gt_x.get() + mx[1] - 1) - gt_x.get();
+	mx[2] = std::max_element(gt_x.get() + 3, gt_x.get() + mx[1] - 1)
+			- gt_x.get();
 
 	mx[3] = std::max_element(gt_x.get() + mx[0] + static_cast<int> ((my[3]
 			- my[0]) / 2.0) - (rp -> get<5> ()), gt_x.get() + mx[0]
@@ -926,15 +955,17 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 			- my[0]) / 5.0), gt_x.get() + mx[3] + 1 + static_cast<int> ((my[3]
 			- my[0]) / 3.0)) - gt_x.get();
 
-	mx[5] = std::max_element(gt_x.get() + mx[4] + 1 + static_cast<int> ((my[3]
-			- my[0]) / 3.0), gt_x.get() + mx[4] + 1 + static_cast<int> ((my[3]
-			- my[0]) / 2.0)) - gt_x.get();
+	mx[5] = std::max_element(gt_x.get() + mx[4] + static_cast<int> (((mx[3]
+			- mx[0]) * 0.8)), gt_x.get() + mx[4] + static_cast<int> (((mx[3]
+			- mx[0]) * 1.2))) - gt_x.get();
 
 	rp -> get<2> () = mx;
 	rp -> get<3> () = my;
 
 	rp -> get<4> ().first.reset(new QImage(xgrad));
 	rp -> get<4> ().second.reset(new QImage(ygrad));
+
+	rp -> get<6>() = centr;
 
 	Pss(tmr.elapsed(), "[" + QString::number(mx[0]) + ", " + QString::number(
 			maxy) + "]");

@@ -65,7 +65,7 @@ class SobMainWin: public QMainWindow
 		typedef std::pair<boost::shared_ptr<QImage>, boost::shared_ptr<QImage> >
 				igrads_t; //x-grad img, y-grad img
 		typedef boost::tuple<gradarr_t, gradarr_t, gradarr_t, gradarr_t,
-				igrads_t, uint> grad_t; //grad-x, grad-y, x-max[], y-max[], grad images, eye area tol. hgt
+				igrads_t, uint, uint> grad_t; //grad-x, grad-y, x-max[], y-max[], grad images, eye area tol. hgt,  face mid. dist
 		//			y-max: left 1st max, l 2nd m, right 1st m, r 2nd m
 		//			x-max: eye line, eye brows, hair, nose, mouth, chin
 	private:

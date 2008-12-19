@@ -268,7 +268,7 @@ void SobMainWin::Disp_grad( bool )
 
 	qp.setPen("red");
 	qp.setBrush(QBrush(QColor("red")));
-	qp.setOpacity(0.2);
+	qp.setOpacity(0.05);
 	qp.drawRect(0, g -> get<2> ()[0] - (g -> get<5> ()), tmp.width(), g -> get<
 			5> () * 2);
 	qp.setOpacity(1);
@@ -278,9 +278,10 @@ void SobMainWin::Disp_grad( bool )
 
 	qp.setPen(QPen(QColor("red"), 1.5, Qt::DashLine));
 	qp.drawLine(0, g -> get<2> ()[1], tmp.width(), g -> get<2> ()[1]);
-	qp.drawLine(0, g -> get<2> ()[2], tmp.width(), g -> get<2> ()[2]);
 	qp.drawLine(0, g -> get<2> ()[3], tmp.width(), g -> get<2> ()[3]);
 	qp.drawLine(0, g -> get<2> ()[4], tmp.width(), g -> get<2> ()[4]);
+	qp.setPen(QPen(QColor("red"), 1.5, Qt::DotLine));
+	qp.drawLine(0, g -> get<2> ()[2], tmp.width(), g -> get<2> ()[2]);
 	qp.drawLine(0, g -> get<2> ()[5], tmp.width(), g -> get<2> ()[5]);
 
 	qp.setPen(QPen(QColor("blue"), 1.5, Qt::SolidLine));
@@ -290,6 +291,10 @@ void SobMainWin::Disp_grad( bool )
 	qp.setPen(QPen(QColor("blue"), 1.5, Qt::DotLine));
 	qp.drawLine(g -> get<3> ()[1], 0, g -> get<3> ()[1], tmp.height());
 	qp.drawLine(g -> get<3> ()[3], 0, g -> get<3> ()[3], tmp.height());
+
+	qp.setPen(QPen(QColor("green"), 1.5, Qt::DashLine));
+	qp.drawLine( g -> get<6> () , 0, g -> get<6> () , tmp.height());
+
 
 	imgl -> setPixmap(QPixmap::fromImage(tmp.scaled(imgl -> size(),
 			Qt::KeepAspectRatio, Qt::SmoothTransformation)));
