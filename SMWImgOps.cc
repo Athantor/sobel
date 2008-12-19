@@ -686,7 +686,7 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 
 	gradarr_t gt_x(new gradarr_t::element_type[out_im -> height()]);
 	gradarr_t gt_y(new gradarr_t::element_type[out_im -> width()]);
-	gradarr_t mx(new gradarr_t::element_type[3]);
+	gradarr_t mx(new gradarr_t::element_type[6]);
 	gradarr_t my(new gradarr_t::element_type[4]);
 	igrads_t igt;
 	boost::shared_ptr<grad_t> rp(new grad_t(gt_x, gt_y, mx, my, igt, 0));
@@ -785,20 +785,6 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 		mx[0] = gt_x[mx[0]] < gt_x[i] ? i : mx[0];
 	}
 
-	/* 1/2 */
-	/*for(int i = 0; i < out_im -> height() / 2; i++)
-	 {
-	 if((i < mx[0] - 10) and (i > mx[0] - 10))
-	 mx[1] = (gt_x[mx[1]] < gt_x[i]) ? i : mx[1];
-	 }
-
-	 1
-	 for(int i = 0; i < out_im -> height(); i++)
-	 {
-	 mx[2] = (gt_x[mx[2]] < gt_x[2]) and (gt_x[i] != mx[0]) and (gt_x[i]
-	 != mx[1]) ? i : mx[2];
-	 }
-	 */
 	//-----------
 
 
@@ -883,6 +869,7 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 				{
 					my[3] = i;
 					max2 = gt_y[i];
+					ctr2++;
 				}
 				else
 				{
@@ -896,6 +883,7 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 			{
 				my[2] = i;
 				max1 = gt_y[i];
+				ctr++;
 			}
 			else
 			{
@@ -903,6 +891,44 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 			}
 		}
 	}
+
+	//----------------
+	// x
+	//---------------
+
+	ctr = ctr2 = rp -> get<5> ();
+	max1 = max2 = 0;
+	for(int i = mx[0] - static_cast<int> ((ctr - (ctr / 1.5))); i >= 0; --i)
+	{
+		if(!ctr)
+			break;
+
+		if(gt_x[i] > max1)
+		{
+			mx[1] = i;
+			max1 = gt_x[i];
+			ctr++;
+		}
+		else
+		{
+			ctr--;
+		}
+
+	}
+
+	mx[2] = std::max_element(gt_x.get(), gt_x.get() + mx[1] - 1) - gt_x.get();
+
+	mx[3] = std::max_element(gt_x.get() + mx[0] + static_cast<int> ((my[3]
+			- my[0]) / 2.0) - (rp -> get<5> ()), gt_x.get() + mx[0]
+			+ static_cast<int> ((my[3] - my[0]) / 2.0)) - gt_x.get();
+
+	mx[4] = std::max_element(gt_x.get() + mx[3] + 1 + static_cast<int> ((my[3]
+			- my[0]) / 5.0), gt_x.get() + mx[3] + 1 + static_cast<int> ((my[3]
+			- my[0]) / 3.0) ) - gt_x.get();
+
+	mx[5] = std::max_element(gt_x.get() + mx[4] + 1 + static_cast<int> ((my[3]
+				- my[0]) / 3.0), gt_x.get() + mx[4] + 1 + static_cast<int> ((my[3]
+				- my[0]) / 2.0) ) - gt_x.get();
 
 	rp -> get<2> () = mx;
 	rp -> get<3> () = my;

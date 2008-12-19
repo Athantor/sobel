@@ -270,12 +270,15 @@ void SobMainWin::Disp_grad( bool )
 			5> () * 2);
 	qp.setOpacity(1);
 
-	qp.setPen("red");
+	qp.setPen(QPen(QColor("red"), 1.5, Qt::SolidLine));
 	qp.drawLine(0, g -> get<2> ()[0], tmp.width(), g -> get<2> ()[0]);
 
-	qp.setPen(Qt::DashLine);
+	qp.setPen(QPen(QColor("red"), 1.5, Qt::DashLine));
 	qp.drawLine(0, g -> get<2> ()[1], tmp.width(), g -> get<2> ()[1]);
 	qp.drawLine(0, g -> get<2> ()[2], tmp.width(), g -> get<2> ()[2]);
+	qp.drawLine(0, g -> get<2> ()[3], tmp.width(), g -> get<2> ()[3]);
+	qp.drawLine(0, g -> get<2> ()[4], tmp.width(), g -> get<2> ()[4]);
+	qp.drawLine(0, g -> get<2> ()[5], tmp.width(), g -> get<2> ()[5]);
 
 	qp.setPen(QPen(QColor("blue"), 1.5, Qt::SolidLine));
 	qp.drawLine(g -> get<3> ()[0], 0, g -> get<3> ()[0], tmp.height());
