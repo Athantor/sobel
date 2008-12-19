@@ -64,12 +64,12 @@ class SobMainWin: public QMainWindow
 		typedef boost::shared_array<ulong> gradarr_t;
 		typedef std::pair<boost::shared_ptr<QImage>, boost::shared_ptr<QImage> >
 				igrads_t; //x-grad img, y-grad img
-		typedef boost::tuple<gradarr_t, gradarr_t, gradarr_t, gradarr_t,
-				igrads_t, uint, uint> grad_t; //grad-x, grad-y, x-max[], y-max[], grad images, eye area tol. hgt,  face mid. dist
+		typedef boost::tuple<gradarr_t, gradarr_t, igrads_t> grad_t; //grad-x, grad-y, grad images
+
+		typedef gradarr_t featarr_t;
+		typedef boost::tuple<featarr_t, featarr_t, uint, uint, uint> feat_t; //  x-max[], y-max[], eye area tol. hgt,  face mid. x dist,  face mid. y dist
 		//			y-max: left 1st max, l 2nd m, right 1st m, r 2nd m
 		//			x-max: eye line, eye brows, hair, nose, mouth, chin
-		typedef gradarr_t featarr_t;
-		typedef boost::tuple<featarr_t, featarr_t, uint, uint> feat_t;
 	private:
 		std::auto_ptr<Ui::MainWindow> mwin_ui;
 
@@ -123,10 +123,13 @@ class SobMainWin: public QMainWindow
 		void Do_enables( bool );
 		void Display_imgs();
 		boost::shared_ptr<grad_t> Make_grads( bool );
+		boost::shared_ptr<feat_t> Make_feats( bool );
+
 
 		void Set_gamma_lbl( int );
 
 		void Disp_grad( bool );
+		void Disp_feat( bool );
 		void Crop_face( bool );
 
 		void Do_auto( bool );

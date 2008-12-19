@@ -235,8 +235,13 @@ void SobMainWin::Disp_grad( bool )
 
 	//-------------
 
-	long mx = g -> get<0> ()[g -> get<2> ()[0]];
-	long my = g -> get<1> ()[g -> get<3> ()[0]];
+
+	const int maxx = std::max_element(g -> get<0> ().get(),
+			g -> get<0> ().get() + out_im -> height()) - g -> get<0> ().get();
+	const int maxy = std::max_element(g -> get<1> ().get(),
+			g -> get<1> ().get() + out_im -> width()) - g -> get<1> ().get();
+	long mx = g -> get<0> ()[maxx];
+	long my = g -> get<1> ()[maxy];
 
 	QPainter gx(xgdtli.get()), gy(ygdtli.get());
 	/**/
@@ -264,38 +269,38 @@ void SobMainWin::Disp_grad( bool )
 	//---------
 
 	QImage tmp(*out_im);
-	QPainter qp(&tmp);
+	/*	QPainter qp(&tmp);
 
-	qp.setPen("red");
-	qp.setBrush(QBrush(QColor("red")));
-	qp.setOpacity(0.05);
-	qp.drawRect(0, g -> get<2> ()[0] - (g -> get<5> ()), tmp.width(), g -> get<
-			5> () * 2);
-	qp.setOpacity(1);
+	 qp.setPen("red");
+	 qp.setBrush(QBrush(QColor("red")));
+	 qp.setOpacity(0.05);
+	 qp.drawRect(0, g -> get<2> ()[0] - (g -> get<5> ()), tmp.width(), g -> get<
+	 5> () * 2);
+	 qp.setOpacity(1);
 
-	qp.setPen(QPen(QColor("red"), 1.5, Qt::SolidLine));
-	qp.drawLine(0, g -> get<2> ()[0], tmp.width(), g -> get<2> ()[0]);
+	 qp.setPen(QPen(QColor("red"), 1.5, Qt::SolidLine));
+	 qp.drawLine(0, g -> get<2> ()[0], tmp.width(), g -> get<2> ()[0]);
 
-	qp.setPen(QPen(QColor("red"), 1.5, Qt::DashLine));
-	qp.drawLine(0, g -> get<2> ()[1], tmp.width(), g -> get<2> ()[1]);
-	qp.drawLine(0, g -> get<2> ()[3], tmp.width(), g -> get<2> ()[3]);
-	qp.drawLine(0, g -> get<2> ()[4], tmp.width(), g -> get<2> ()[4]);
-	qp.setPen(QPen(QColor("red"), 1.5, Qt::DotLine));
-	qp.drawLine(0, g -> get<2> ()[2], tmp.width(), g -> get<2> ()[2]);
-	qp.drawLine(0, g -> get<2> ()[5], tmp.width(), g -> get<2> ()[5]);
+	 qp.setPen(QPen(QColor("red"), 1.5, Qt::DashLine));
+	 qp.drawLine(0, g -> get<2> ()[1], tmp.width(), g -> get<2> ()[1]);
+	 qp.drawLine(0, g -> get<2> ()[3], tmp.width(), g -> get<2> ()[3]);
+	 qp.drawLine(0, g -> get<2> ()[4], tmp.width(), g -> get<2> ()[4]);
+	 qp.setPen(QPen(QColor("red"), 1.5, Qt::DotLine));
+	 qp.drawLine(0, g -> get<2> ()[2], tmp.width(), g -> get<2> ()[2]);
+	 qp.drawLine(0, g -> get<2> ()[5], tmp.width(), g -> get<2> ()[5]);
 
-	qp.setPen(QPen(QColor("blue"), 1.5, Qt::SolidLine));
-	qp.drawLine(g -> get<3> ()[0], 0, g -> get<3> ()[0], tmp.height());
-	qp.drawLine(g -> get<3> ()[2], 0, g -> get<3> ()[2], tmp.height());
+	 qp.setPen(QPen(QColor("blue"), 1.5, Qt::SolidLine));
+	 qp.drawLine(g -> get<3> ()[0], 0, g -> get<3> ()[0], tmp.height());
+	 qp.drawLine(g -> get<3> ()[2], 0, g -> get<3> ()[2], tmp.height());
 
-	qp.setPen(QPen(QColor("blue"), 1.5, Qt::DotLine));
-	qp.drawLine(g -> get<3> ()[1], 0, g -> get<3> ()[1], tmp.height());
-	qp.drawLine(g -> get<3> ()[3], 0, g -> get<3> ()[3], tmp.height());
+	 qp.setPen(QPen(QColor("blue"), 1.5, Qt::DotLine));
+	 qp.drawLine(g -> get<3> ()[1], 0, g -> get<3> ()[1], tmp.height());
+	 qp.drawLine(g -> get<3> ()[3], 0, g -> get<3> ()[3], tmp.height());
 
-	qp.setPen(QPen(QColor("green"), 1.5, Qt::DashLine));
-	qp.drawLine( g -> get<6> () , 0, g -> get<6> () , tmp.height());
+	 qp.setPen(QPen(QColor("green"), 1.5, Qt::DashLine));
+	 qp.drawLine( g -> get<6> () , 0, g -> get<6> () , tmp.height());
 
-
+	 */
 	imgl -> setPixmap(QPixmap::fromImage(tmp.scaled(imgl -> size(),
 			Qt::KeepAspectRatio, Qt::SmoothTransformation)));
 
@@ -318,14 +323,15 @@ void SobMainWin::Disp_grad( bool )
 
 void SobMainWin::Do_auto( bool )
 {
-	To_gray(true);
+	/*To_gray(true);
 	Sobel_op(true);
 	Avg_blur(true);
 	Otsus_bin(true);
 	Median_fr(true);
 	Median_fr(true);
 	Median_fr(true);
-	Disp_grad(true);
+	//Disp_grad(true);*/
+	Disp_feat(false);
 }
 
 void SobMainWin::Crop_face( bool d )
@@ -342,7 +348,60 @@ void SobMainWin::Crop_face( bool d )
 
 	boost::shared_ptr<grad_t> g = Make_grads(true);
 
-	out_im.reset(new QImage(tmp.copy(g -> get<3>()[1], g -> get<2>()[2], g -> get<3>()[3] - g -> get<3>()[1], g -> get<2>()[5] - g -> get<2>()[2] )) );
-	if(!d) Display_imgs();
+	//out_im.reset(new QImage(tmp.copy(g -> get<3>()[1], g -> get<2>()[2], g -> get<3>()[3] - g -> get<3>()[1], g -> get<2>()[5] - g -> get<2>()[2] )) );
+	if(!d)
+		Display_imgs();
 
+}
+
+void SobMainWin::Disp_feat( bool d )
+{
+	QImage tmp(*out_im);
+
+	To_gray(true);
+	Sobel_op(true);
+	Avg_blur(true);
+	Otsus_bin(true);
+	Median_fr(true);
+	Median_fr(true);
+	Median_fr(true);
+
+	boost::shared_ptr<feat_t> g = Make_feats(true);
+
+	QPainter qp(&tmp);
+
+	qp.setPen("red");
+	qp.setBrush(QBrush(QColor("red")));
+	qp.setOpacity(0.05);
+	qp.drawRect(0, g -> get<0> ()[0] - (g -> get<2> ()), tmp.width(), g -> get<
+			2> () * 2);
+	qp.setOpacity(1);
+
+	qp.setPen(QPen(QColor("red"), 1.5, Qt::SolidLine));
+	qp.drawLine(0, g -> get<0> ()[0], tmp.width(), g -> get<0> ()[0]);
+
+	qp.setPen(QPen(QColor("red"), 1.5, Qt::DashLine));
+	qp.drawLine(0, g -> get<0> ()[1], tmp.width(), g -> get<0> ()[1]);
+	qp.drawLine(0, g -> get<0> ()[3], tmp.width(), g -> get<0> ()[3]);
+	qp.drawLine(0, g -> get<0> ()[4], tmp.width(), g -> get<0> ()[4]);
+	qp.setPen(QPen(QColor("red"), 1.5, Qt::DotLine));
+	qp.drawLine(0, g -> get<0> ()[2], tmp.width(), g -> get<0> ()[2]);
+	qp.drawLine(0, g -> get<0> ()[5], tmp.width(), g -> get<0> ()[5]);
+
+	qp.setPen(QPen(QColor("blue"), 1.5, Qt::SolidLine));
+	qp.drawLine(g -> get<1> ()[0], 0, g -> get<1> ()[0], tmp.height());
+	qp.drawLine(g -> get<1> ()[2], 0, g -> get<1> ()[2], tmp.height());
+
+	qp.setPen(QPen(QColor("blue"), 1.5, Qt::DotLine));
+	qp.drawLine(g -> get<1> ()[1], 0, g -> get<1> ()[1], tmp.height());
+	qp.drawLine(g -> get<1> ()[3], 0, g -> get<1> ()[3], tmp.height());
+
+	qp.setPen(QPen(QColor("green"), 1.5, Qt::DashLine));
+	qp.drawLine(g -> get<3> (), 0, g -> get<3> (), tmp.height());
+
+	qp.end();
+
+	out_im.reset(new QImage(tmp));
+	if(!d)
+		Display_imgs();
 }
