@@ -346,9 +346,9 @@ void SobMainWin::Crop_face( bool d )
 
 	Prep_to_extr(true);
 
-	boost::shared_ptr<grad_t> g = Make_grads(true);
+	boost::shared_ptr<feat_t> g = Make_feats(true);
 
-	//out_im.reset(new QImage(tmp.copy(g -> get<3>()[1], g -> get<2>()[2], g -> get<3>()[3] - g -> get<3>()[1], g -> get<2>()[5] - g -> get<2>()[2] )) );
+	//out_im.reset(new QImage(tmp.copy( g->get<1>[0] )) );
 	if(!d)
 		Display_imgs();
 
@@ -392,6 +392,7 @@ void SobMainWin::Disp_feat( bool d )
 
 	qp.setPen(QPen(QColor("green"), 1.5, Qt::DashLine));
 	qp.drawLine(g -> get<3> (), 0, g -> get<3> (), tmp.height());
+	qp.drawLine(0, g -> get<4> (), tmp.width(), g -> get<4> ());
 
 	qp.end();
 

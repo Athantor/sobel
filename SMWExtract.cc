@@ -63,7 +63,7 @@ boost::shared_ptr<SobMainWin::feat_t> SobMainWin::Make_feats( bool )
 			- gt_x.get(); // eye brows
 
 	mx[2] = std::max_element(gt_x.get() + 3, gt_x.get() + mx[1] - 1)
-			- gt_x.get(); // heir
+			- gt_x.get(); // hair
 
 	mx[3] = std::max_element(gt_x.get() + mx[0] + static_cast<int> ((my[3]
 			- my[0]) / 2.0) - (rp -> get<2> ()), gt_x.get() + mx[0]
@@ -78,6 +78,7 @@ boost::shared_ptr<SobMainWin::feat_t> SobMainWin::Make_feats( bool )
 			- mx[0]) * 1.2))) - gt_x.get(); //chin
 
 	rp -> get<3>() = centr;
+	rp -> get<4>() = mx[2] + ( (mx[5] - mx[2]) / 2  );
 
 	return rp;
 
