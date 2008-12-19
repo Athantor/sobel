@@ -395,6 +395,9 @@
    </property>
   </action>
   <action name="actionPrzytnij" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Przytnij</string>
    </property>

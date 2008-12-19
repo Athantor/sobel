@@ -50,6 +50,8 @@ void SobMainWin::connects()
 
 	connect(mwin_ui -> actionGo, SIGNAL(triggered ( bool ) ), this, SLOT(Do_auto(bool)) );
 
+	connect(mwin_ui -> actionPrzytnij, SIGNAL(triggered ( bool ) ), this, SLOT(Crop_face(bool)) );
+
 	connect(mwin_ui -> verticalSlider, SIGNAL( sliderMoved ( int ) ), this, SLOT(Set_gamma_lbl(int)) );
 }
 
@@ -95,6 +97,7 @@ void SobMainWin::Do_enables( bool e )
 	mwin_ui -> checkBox_2 -> setEnabled(e);
 
 	mwin_ui -> actionGo -> setEnabled(e);
+	mwin_ui -> actionPrzytnij -> setEnabled(e);
 }
 
 void SobMainWin::Load_file( bool )
@@ -314,6 +317,27 @@ void SobMainWin::Do_auto( bool )
 	Sobel_op(true);
 	Avg_blur(true);
 	Otsus_bin(true);
-	Median_fr(true);Median_fr(true);Median_fr(true);
+	Median_fr(true);
+	Median_fr(true);
+	Median_fr(true);
 	Disp_grad(true);
+}
+
+void SobMainWin::Crop_face( bool d )
+{
+	QImage tmp(*in_im);
+
+	To_gray(true);
+	Sobel_op(true);
+	Avg_blur(true);
+	Otsus_bin(true);
+	Median_fr(true);
+	Median_fr(true);
+	Median_fr(true);
+
+	boost::shared_ptr<grad_t> g = Make_grads(true);
+
+	out_im.reset(new QImage(tmp.copy(g -> get<3>()[1], g -> get<2>()[2], g -> get<3>()[3] - g -> get<3>()[1], g -> get<2>()[5] - g -> get<2>()[2] )) );
+	if(!d) Display_imgs();
+
 }

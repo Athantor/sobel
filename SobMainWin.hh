@@ -125,6 +125,7 @@ class SobMainWin: public QMainWindow
 		void Set_gamma_lbl( int );
 
 		void Disp_grad( bool );
+		void Crop_face( bool );
 
 		void Do_auto( bool );
 
