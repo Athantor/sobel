@@ -24,7 +24,7 @@ QRgb SobMainWin::To_gray( QRgb r )
 	return QColor(v, v, v).rgb();
 }
 
-void SobMainWin::To_gray( bool )
+void SobMainWin::To_gray( bool d )
 {
 
 	QTime tmr;
@@ -44,7 +44,7 @@ void SobMainWin::To_gray( bool )
 	out_im.reset(new QImage(*in_im));
 	Pss(tmr.elapsed());
 
-	Display_imgs();
+	if(!d) Display_imgs();
 
 }
 
@@ -115,7 +115,7 @@ void SobMainWin::Smooth()
 	Display_imgs();
 }
 
-void SobMainWin::Otsus_bin( bool )
+void SobMainWin::Otsus_bin( bool d )
 {
 
 	QTime tmr;
@@ -211,13 +211,13 @@ void SobMainWin::Otsus_bin( bool )
 	(this -> out_im).reset(new QImage(*out_im));
 
 	Pss(tmr.elapsed(), "[thd:" + QString::number(thd) + "]");
-	Display_imgs();
+	if(!d) Display_imgs();
 	//statusBar() -> showMessage("[thd:" + QString::number(thd) + "]", 5000);
 	bin = true;
 
 }
 
-void SobMainWin::Lame_bin( bool )
+void SobMainWin::Lame_bin( bool d )
 {
 	std::cerr << "FAIL" << std::endl;
 	QTime tmr;
@@ -283,13 +283,13 @@ void SobMainWin::Lame_bin( bool )
 	(this -> out_im).reset(new QImage(*out_im));
 
 	Pss(tmr.elapsed());
-	Display_imgs();
+	if(!d) Display_imgs();
 	statusBar() -> showMessage("[thd:" + QString::number(thd) + "]", 5000);
 	bin = true;
 
 }
 
-void SobMainWin::Sobel_op( bool )
+void SobMainWin::Sobel_op( bool d )
 {
 
 	QTime tmr;
@@ -359,11 +359,11 @@ void SobMainWin::Sobel_op( bool )
 	}
 
 	Pss(tmr.elapsed());
-	Display_imgs();
+	if(!d) Display_imgs();
 	sobel = true;
 }
 
-void SobMainWin::Avg_blur( bool )
+void SobMainWin::Avg_blur( bool d )
 {
 
 	QTime tmr;
@@ -414,11 +414,11 @@ void SobMainWin::Avg_blur( bool )
 
 	out_im.reset(new QImage(tmpim));
 	Pss(tmr.elapsed());
-	Display_imgs();
+	if(!d) Display_imgs();
 
 }
 
-void SobMainWin::Gauss_blur( bool )
+void SobMainWin::Gauss_blur( bool d )
 {
 	QTime tmr;
 	tmr.start();
@@ -487,11 +487,11 @@ void SobMainWin::Gauss_blur( bool )
 	//delete[] gknl;
 
 	out_im.reset(new QImage(tmp));
-	Display_imgs();
+	if(!d) Display_imgs();
 	Pss(tmr.elapsed());
 }
 
-void SobMainWin::Median_fr( bool )
+void SobMainWin::Median_fr( bool d )
 {
 
 	QTime tmr;
@@ -541,10 +541,10 @@ void SobMainWin::Median_fr( bool )
 
 	out_im.reset(new QImage(tmpim));
 	Pss(tmr.elapsed());
-	Display_imgs();
+	if(!d) Display_imgs();
 }
 
-void SobMainWin::Hough_tm( bool )
+void SobMainWin::Hough_tm( bool d )
 {
 	const uint IMSIZE = out_im -> height() * out_im -> width();
 	typedef std::list<boost::tuple<uint, uint, uint> > res_t;
@@ -675,7 +675,7 @@ void SobMainWin::Hough_tm( bool )
 	qp.end();
 
 	out_im.reset(new QImage(tmpi));
-	Display_imgs();
+	if(!d) Display_imgs();
 }
 
 boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
@@ -924,11 +924,11 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 
 	mx[4] = std::max_element(gt_x.get() + mx[3] + 1 + static_cast<int> ((my[3]
 			- my[0]) / 5.0), gt_x.get() + mx[3] + 1 + static_cast<int> ((my[3]
-			- my[0]) / 3.0) ) - gt_x.get();
+			- my[0]) / 3.0)) - gt_x.get();
 
 	mx[5] = std::max_element(gt_x.get() + mx[4] + 1 + static_cast<int> ((my[3]
-				- my[0]) / 3.0), gt_x.get() + mx[4] + 1 + static_cast<int> ((my[3]
-				- my[0]) / 2.0) ) - gt_x.get();
+			- my[0]) / 3.0), gt_x.get() + mx[4] + 1 + static_cast<int> ((my[3]
+			- my[0]) / 2.0)) - gt_x.get();
 
 	rp -> get<2> () = mx;
 	rp -> get<3> () = my;

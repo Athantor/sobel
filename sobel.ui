@@ -243,8 +243,15 @@
     <addaction name="menuBinaryzacja" />
     <addaction name="actionHough" />
    </widget>
+   <widget class="QMenu" name="menuPaszcza" >
+    <property name="title" >
+     <string>Paszcza</string>
+    </property>
+    <addaction name="actionPrzytnij" />
+   </widget>
    <addaction name="menuOp" />
    <addaction name="menuOp_2" />
+   <addaction name="menuPaszcza" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolBar" >
@@ -385,6 +392,11 @@
    </property>
    <property name="text" >
     <string>Go!</string>
+   </property>
+  </action>
+  <action name="actionPrzytnij" >
+   <property name="text" >
+    <string>Przytnij</string>
    </property>
   </action>
  </widget>

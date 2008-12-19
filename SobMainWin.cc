@@ -310,11 +310,10 @@ void SobMainWin::Disp_grad( bool )
 
 void SobMainWin::Do_auto( bool )
 {
-	To_gray(false);
-	Sobel_op(false);
-	Avg_blur(false);
-	Otsus_bin(false);
-	Median_fr(false);Median_fr(false);Median_fr(false);
-	Disp_grad(false);
-
+	To_gray(true);
+	Sobel_op(true);
+	Avg_blur(true);
+	Otsus_bin(true);
+	Median_fr(true);Median_fr(true);Median_fr(true);
+	Disp_grad(true);
 }
