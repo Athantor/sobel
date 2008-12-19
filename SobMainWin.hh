@@ -68,6 +68,8 @@ class SobMainWin: public QMainWindow
 				igrads_t, uint, uint> grad_t; //grad-x, grad-y, x-max[], y-max[], grad images, eye area tol. hgt,  face mid. dist
 		//			y-max: left 1st max, l 2nd m, right 1st m, r 2nd m
 		//			x-max: eye line, eye brows, hair, nose, mouth, chin
+		typedef gradarr_t featarr_t;
+		typedef boost::tuple<featarr_t, featarr_t, uint, uint> feat_t;
 	private:
 		std::auto_ptr<Ui::MainWindow> mwin_ui;
 

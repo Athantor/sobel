@@ -15,3 +15,5 @@
  ---
  Copyright (C) 2008, Krzysztof Kundzicz <athantor@gmail.com>
  */
+
+#include "SobMainWin.hh"
