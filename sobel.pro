@@ -12,4 +12,4 @@ QMAKE_CXXFLAGS_DEBUG += -O0 -Wall -Wextra -g3 -ggdb3
 # Input
 HEADERS += SobelApp.hh SobMainWin.hh
 FORMS += sobel.ui
-SOURCES += SMWImgOps.cc sobel.cc SobelApp.cc SobMainWin.cc
+SOURCES += SMWImgOps.cc sobel.cc SobelApp.cc SobMainWin.cc SMWExtract.cc
