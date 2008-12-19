@@ -348,7 +348,9 @@ void SobMainWin::Crop_face( bool d )
 
 	boost::shared_ptr<feat_t> g = Make_feats(true);
 
-	//out_im.reset(new QImage(tmp.copy( g->get<1>[0] )) );
+	out_im.reset(new QImage(tmp.copy(g->get<1> ()[1], g->get<0> ()[2],
+			g -> get<1> ()[3] - g -> get<1> ()[1], g -> get<0> ()[5]
+					- g -> get<0> ()[2])));
 	if(!d)
 		Display_imgs();
 
