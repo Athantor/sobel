@@ -807,11 +807,11 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 		{
 			if((x > down) and (x < up))
 			{
-				gt_y[y] += qRed(ygrad.pixel(y, x)) * 2;
+				gt_y[y] += static_cast<ulong>(qRed(ygrad.pixel(y, x)) * 2);
 			}
 			else
 			{
-				gt_y[y] += qRed(ygrad.pixel(y, x)) * 0.5;
+				gt_y[y] += static_cast<ulong>(qRed(ygrad.pixel(y, x)) * 0.5);
 			}
 
 		}
