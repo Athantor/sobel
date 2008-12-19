@@ -122,6 +122,7 @@ class SobMainWin: public QMainWindow
 		void Hough_tm( bool );
 		void Do_enables( bool );
 		void Display_imgs();
+		void Prep_to_extr(bool);
 		boost::shared_ptr<grad_t> Make_grads( bool );
 		boost::shared_ptr<feat_t> Make_feats( bool );
 

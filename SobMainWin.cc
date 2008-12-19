@@ -321,16 +321,22 @@ void SobMainWin::Disp_grad( bool )
 
 }
 
+void SobMainWin::Prep_to_extr( bool d )
+{
+	To_gray(d);
+	Sobel_op(d);
+	Avg_blur(d);
+	Otsus_bin(d);
+	Median_fr(d);
+	Median_fr(d);
+	Median_fr(d);
+}
+
 void SobMainWin::Do_auto( bool )
 {
-	/*To_gray(true);
-	Sobel_op(true);
-	Avg_blur(true);
-	Otsus_bin(true);
-	Median_fr(true);
-	Median_fr(true);
-	Median_fr(true);
-	//Disp_grad(true);*/
+	/*
+	 Prep_to_extr(true);
+	 //Disp_grad(true);*/
 	Disp_feat(false);
 }
 
@@ -338,13 +344,7 @@ void SobMainWin::Crop_face( bool d )
 {
 	QImage tmp(*in_im);
 
-	To_gray(true);
-	Sobel_op(true);
-	Avg_blur(true);
-	Otsus_bin(true);
-	Median_fr(true);
-	Median_fr(true);
-	Median_fr(true);
+	Prep_to_extr(true);
 
 	boost::shared_ptr<grad_t> g = Make_grads(true);
 
@@ -358,13 +358,7 @@ void SobMainWin::Disp_feat( bool d )
 {
 	QImage tmp(*out_im);
 
-	To_gray(true);
-	Sobel_op(true);
-	Avg_blur(true);
-	Otsus_bin(true);
-	Median_fr(true);
-	Median_fr(true);
-	Median_fr(true);
+	Prep_to_extr(true);
 
 	boost::shared_ptr<feat_t> g = Make_feats(true);
 
