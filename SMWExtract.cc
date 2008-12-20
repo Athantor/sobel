@@ -31,11 +31,10 @@ boost::shared_ptr<SobMainWin::feat_t> SobMainWin::Make_feats( bool )
 	std::fill(mx.get(), mx.get() + 6, 0);
 	std::fill(my.get(), my.get() + 4, 0);
 
-	const uchar TOLPCT = 5; //tolerance above and below where eyes shall be
 	rp -> get<2> () = static_cast<int> (((out_im -> height())
-			* (TOLPCT / 100.0))); //eye area height
+			* (XTOLPCT / 100.0))); //eye area height
 
-	const int YWDT = static_cast<int> (((out_im -> width()) * (7 / 100.0))); // Y tolerance
+	const int YWDT = static_cast<int> (((out_im -> width()) * (YTOLPCT / 100.0))); // Y tolerance
 
 	// eye line: looking in space between 1/4 and 3/4 image's height
 	mx[0] = Find_eyeline_el(out_im -> height() / 4, out_im -> height() / 4 * 2, gt_x);

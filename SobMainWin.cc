@@ -19,7 +19,7 @@
 #include "SobMainWin.hh"
 
 SobMainWin::SobMainWin() :
-	mwin_ui(new Ui::MainWindow()), sobel(false), bin(false)
+	mwin_ui(new Ui::MainWindow()), sobel(false), bin(false), XTOLPCT(5.0), YTOLPCT(7.5)
 {
 	mwin_ui -> setupUi(this);
 

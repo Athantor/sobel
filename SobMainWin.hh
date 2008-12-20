@@ -80,6 +80,10 @@ class SobMainWin: public QMainWindow
 		bool sobel;
 		bool bin;
 
+		const double XTOLPCT;
+		const double YTOLPCT;
+
+
 		void connects();
 
 		QRgb To_gray( QRgb );
