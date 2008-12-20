@@ -29,6 +29,7 @@ void SobMainWin::To_gray( bool d )
 
 	QTime tmr;
 	tmr.start();
+	this -> setCursor(Qt::WaitCursor);
 
 	for(int y = 0; y < in_im -> height(); ++y)
 	{
@@ -46,6 +47,8 @@ void SobMainWin::To_gray( bool d )
 
 	if(!d)
 		Display_imgs();
+
+	this -> setCursor(Qt::ArrowCursor);
 
 }
 
@@ -80,6 +83,7 @@ void SobMainWin::Smooth()
 
 	QTime tmr;
 	tmr.start();
+	this -> setCursor(Qt::WaitCursor);
 
 	uint8_t Smth[3][3] = { { 1, 1, 1 }, { 1, -5, 1 }, { 1, 1, 1 } };
 	uint8_t px = 0;
@@ -114,6 +118,7 @@ void SobMainWin::Smooth()
 
 	Pss(tmr.elapsed());
 	Display_imgs();
+	this -> setCursor(Qt::ArrowCursor);
 }
 
 void SobMainWin::Otsus_bin( bool d )
@@ -121,6 +126,7 @@ void SobMainWin::Otsus_bin( bool d )
 
 	QTime tmr;
 	tmr.start();
+	this -> setCursor(Qt::WaitCursor);
 
 	//To_gray();
 
@@ -216,6 +222,7 @@ void SobMainWin::Otsus_bin( bool d )
 		Display_imgs();
 	//statusBar() -> showMessage("[thd:" + QString::number(thd) + "]", 5000);
 	bin = true;
+	this -> setCursor(Qt::ArrowCursor);
 
 }
 
@@ -297,6 +304,7 @@ void SobMainWin::Sobel_op( bool d )
 
 	QTime tmr;
 	tmr.start();
+	this -> setCursor(Qt::WaitCursor);
 
 	//if(not bin) To_gray();
 	if(mwin_ui -> checkBox -> isEnabled())
@@ -365,6 +373,7 @@ void SobMainWin::Sobel_op( bool d )
 	if(!d)
 		Display_imgs();
 	sobel = true;
+	this -> setCursor(Qt::ArrowCursor);
 }
 
 void SobMainWin::Avg_blur( bool d )
@@ -372,6 +381,7 @@ void SobMainWin::Avg_blur( bool d )
 
 	QTime tmr;
 	tmr.start();
+	this -> setCursor(Qt::WaitCursor);
 
 	uint sum = 0;
 	const double pct = (9 * 255) * 0.85;
@@ -421,12 +431,15 @@ void SobMainWin::Avg_blur( bool d )
 	if(!d)
 		Display_imgs();
 
+	this -> setCursor(Qt::ArrowCursor);
+
 }
 
 void SobMainWin::Gauss_blur( bool d )
 {
 	QTime tmr;
 	tmr.start();
+	this -> setCursor(Qt::WaitCursor);
 
 	//	const int KERNS = 5;
 	//	const int KERNMID = std::ceil(KERNS / 2);
@@ -495,6 +508,7 @@ void SobMainWin::Gauss_blur( bool d )
 	if(!d)
 		Display_imgs();
 	Pss(tmr.elapsed());
+	this -> setCursor(Qt::ArrowCursor);
 }
 
 void SobMainWin::Median_fr( bool d )
@@ -502,6 +516,7 @@ void SobMainWin::Median_fr( bool d )
 
 	QTime tmr;
 	tmr.start();
+	this -> setCursor(Qt::WaitCursor);
 
 	uint sum = 0;
 
@@ -549,10 +564,14 @@ void SobMainWin::Median_fr( bool d )
 	Pss(tmr.elapsed());
 	if(!d)
 		Display_imgs();
+	this -> setCursor(Qt::ArrowCursor);
 }
 
 void SobMainWin::Hough_tm( bool d )
 {
+
+	this -> setCursor(Qt::WaitCursor);
+
 	const uint IMSIZE = out_im -> height() * out_im -> width();
 	typedef std::list<boost::tuple<uint, uint, uint> > res_t;
 	typedef std::vector<std::vector<uint> > acc_t;
@@ -684,6 +703,8 @@ void SobMainWin::Hough_tm( bool d )
 	out_im.reset(new QImage(tmpi));
 	if(!d)
 		Display_imgs();
+
+	this -> setCursor(Qt::ArrowCursor);
 }
 
 boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
@@ -691,6 +712,7 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 
 	QTime tmr;
 	tmr.start();
+	this -> setCursor(Qt::WaitCursor);
 
 	gradarr_t gt_x(new gradarr_t::element_type[out_im -> height()]);
 	gradarr_t gt_y(new gradarr_t::element_type[out_im -> width()]);
@@ -781,6 +803,7 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 
 
 	Pss(tmr.elapsed());
+	this -> setCursor(Qt::ArrowCursor);
 
 	return rp;
 
@@ -788,5 +811,6 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 
 void SobMainWin::Canny_ed( bool )
 {
-
+	this -> setCursor(Qt::WaitCursor);
+	this -> setCursor(Qt::ArrowCursor);
 }

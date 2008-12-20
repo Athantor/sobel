@@ -71,12 +71,16 @@ void SobMainWin::Do_ops( bool )
 
 void SobMainWin::Display_imgs()
 {
+	this -> setCursor(Qt::WaitCursor);
+
 	mwin_ui -> label -> setPixmap(QPixmap::fromImage(in_im -> scaled(
 			mwin_ui -> label -> size(), Qt::KeepAspectRatio,
 			Qt::SmoothTransformation)));
 	mwin_ui -> label_2 -> setPixmap(QPixmap::fromImage(out_im -> scaled(
 			mwin_ui -> label -> size(), Qt::KeepAspectRatio,
 			Qt::SmoothTransformation)));
+
+	this -> setCursor(Qt::ArrowCursor);
 }
 
 void SobMainWin::Do_enables( bool e )
@@ -120,8 +124,10 @@ void SobMainWin::Load_file( bool )
 	else
 	{
 		in_im.reset(new QImage());
+		this -> setCursor(Qt::WaitCursor);
 		if(not (in_im -> load(fn)))
 		{
+			this -> setCursor(Qt::ArrowCursor);
 			QMessageBox::critical(0, "FAIL", "Nie idzie wczytac");
 			Do_enables(0);
 
@@ -141,6 +147,7 @@ void SobMainWin::Load_file( bool )
 			sobel = false;
 
 			Display_imgs();
+			this -> setCursor(Qt::ArrowCursor);
 
 		}
 	}
@@ -178,11 +185,15 @@ void SobMainWin::Save_file( bool )
 	}
 	else
 	{
+		this -> setCursor(Qt::WaitCursor);
 		if(not (myimg . save(ofn, "png", 50)))
 		{
+			this -> setCursor(Qt::ArrowCursor);
 			QMessageBox::critical(0, "FAIL", "Nie idzie zapisać");
 			return;
 		}
+
+		this -> setCursor(Qt::ArrowCursor);
 	}
 
 	statusBar() -> showMessage(
@@ -219,6 +230,7 @@ void SobMainWin::Pss( int t, const QString & cmt )
 
 void SobMainWin::Disp_grad( bool )
 {
+	this -> setCursor(Qt::WaitCursor);
 	boost::scoped_ptr<QDialog> wgt(new QDialog(this, Qt::Dialog));
 	boost::scoped_ptr<QLabel> imgl(new QLabel(wgt.get()));
 	boost::scoped_ptr<QLabel> xgdtl(new QLabel(wgt.get()));
@@ -322,6 +334,7 @@ void SobMainWin::Disp_grad( bool )
 	ygdtl -> setPixmap(ygdtli -> scaled(ygdtl -> size(), Qt::IgnoreAspectRatio,
 			Qt::SmoothTransformation));
 
+	this -> setCursor(Qt::ArrowCursor);
 	wgt -> exec();
 
 }
