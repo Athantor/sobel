@@ -716,16 +716,15 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 
 	gradarr_t gt_x(new gradarr_t::element_type[out_im -> height()]);
 	gradarr_t gt_y(new gradarr_t::element_type[out_im -> width()]);
+
 	igrads_t igt;
 	boost::shared_ptr<grad_t> rp(new grad_t(gt_x, gt_y, igt));
 
 	std::fill(gt_x.get(), gt_x.get() + out_im -> height(), 0);
 	std::fill(gt_y.get(), gt_y.get() + out_im -> width(), 0);
 
-
 	int8_t Gx[3][3] = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
 	int8_t Gy[3][3] = { { 1, 2, 1 }, { 0, 0, 0 }, { -1, -2, -1 } };
-
 
 	int sumx, sumy = 0;
 	QImage xgrad(*out_im);
@@ -785,20 +784,30 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 
 	}
 
-
+	const uint mx = Find_eyeline_el(out_im -> height() / 4, out_im -> height()
+			/ 4 * 2, gt_x);
+	const uint pct = static_cast<int> (((out_im -> height())
+			* (XTOLPCT / 100.0)));
+	const int up = mx + pct;
+	const int down = mx - pct;
 	for(int y = 0; y < out_im -> width(); y++)
 	{
 		gt_y[y] = 0;
 		for(int x = 0; x < out_im -> height(); x++)
 		{
-			gt_y[y] += static_cast<ulong>(qRed(ygrad.pixel(y, x)));
+			if((x > down) and (x < up))
+			{
+				gt_y[y] += static_cast<ulong> (qRed(ygrad.pixel(y, x)) * 2);
+			}
+			else
+			{
+				gt_y[y] += static_cast<ulong> (qRed(ygrad.pixel(y, x)) * 0.5);
+			}
 		}
 	}
 
-
 	rp -> get<2> ().first.reset(new QImage(xgrad));
 	rp -> get<2> ().second.reset(new QImage(ygrad));
-
 
 	Pss(tmr.elapsed());
 	this -> setCursor(Qt::ArrowCursor);
