@@ -31,15 +31,13 @@ boost::shared_ptr<SobMainWin::feat_t> SobMainWin::Make_feats( bool )
 	std::fill(mx.get(), mx.get() + 6, 0);
 	std::fill(my.get(), my.get() + 4, 0);
 
-	rp -> get<2> () = static_cast<int> (((out_im -> height()) * (XTOLPCT
-			/ 100.0))); //eye area height
+	rp -> get<2> () = static_cast<int> (((out_im -> height())
+			* (XTOLPCT / 100.0))); //eye area height
 
-	const int YWDT =
-			static_cast<int> (((out_im -> width()) * (YTOLPCT / 100.0))); // Y tolerance
+	const int YWDT = static_cast<int> (((out_im -> width()) * (YTOLPCT / 100.0))); // Y tolerance
 
 	// eye line: looking in space between 1/4 and 3/4 image's height
-	mx[0] = Find_eyeline_el(out_im -> height() / 4, out_im -> height() / 4 * 2,
-			gt_x);
+	mx[0] = Find_eyeline_el(out_im -> height() / 4, out_im -> height() / 4 * 2, gt_x);
 
 	my[1] = std::max_element(gt_y.get() + 5, gt_y.get() + (out_im -> width()
 			/ 3) + 1) - gt_y.get(); // outermost left max
@@ -75,94 +73,9 @@ boost::shared_ptr<SobMainWin::feat_t> SobMainWin::Make_feats( bool )
 			- mx[0]) * 0.8)), gt_x.get() + mx[4] + static_cast<int> (((mx[3]
 			- mx[0]) * 1.2))) - gt_x.get(); //chin
 
-	rp -> get<3> () = centr;
-	rp -> get<4> () = mx[2] + ((mx[5] - mx[2]) / 2);
+	rp -> get<3>() = centr;
+	rp -> get<4>() = mx[2] + ( (mx[5] - mx[2]) / 2  );
 
 	return rp;
-}
 
-boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht( bool d )
-{
-	this -> setCursor(Qt::WaitCursor);
-
-	QImage inim_bak(*in_im);
-	QImage outim_bak(*out_im);
-
-	Prep_to_extr(true, 1);
-
-	boost::shared_ptr<feat_t> ftrs = Make_feats(true);
-	boost::shared_ptr<eyeloc_t> rp(new eyeloc_t());
-	const double AEW = (ftrs -> get<1> ()[3] - ftrs -> get<1> ()[1]) / 5.0; //Approx eye width
-	const double AEH = AEW * 0.37; //Approx eye height
-
-	const QPoint ALEP(ftrs -> get<1> ()[0], ftrs -> get<0> ()[0]); // Approximated left eye position
-	const QPoint AREP(ftrs -> get<1> ()[2], ftrs -> get<0> ()[0]); // Approximated right eye position
-
-	const double EWPCT = 16.0; //Tolerance for eye % of face width
-	const double EHPCT = 5.5; //Tolerance for eye % of face height
-
-	const uint FWDH = ftrs -> get<1> ()[3] - ftrs -> get<1> ()[1]; //face width
-	const uint FHGT = ftrs -> get<0> ()[5] - ftrs -> get<0> ()[2]; //face height
-
-	const uint EWW = FWDH * (EWPCT / 100.0); // Eye window width
-	const uint EWH = FHGT * (EHPCT / 100.0); // Eye window height
-
-
-	//left eye
-
-	out_im.reset(new QImage(out_im -> copy(ALEP.x() - EWW, ALEP.y() - EWH, EWW
-			* 2, EWH * 2)));
-	boost::shared_ptr<hought_t> left_eye = Hough_tm(true, AEH);
-
-	hought_t::iterator it = left_eye -> begin();
-	uint sumax = 0;
-	uint sumay = 0;
-	while(it != left_eye -> end())
-	{
-		sumax += (it -> get<0> () - AEH / 4);
-		sumay += (it -> get<1> () + AEH / 4);
-
-		it++;
-	}
-
-	rp -> first = QPoint((ALEP.x() - EWW) + (sumax / left_eye -> size()),
-			(ALEP.y() - EWH) + (sumay / left_eye -> size()));
-
-	// right eye
-
-	out_im.reset(new QImage(outim_bak));
-	Prep_to_extr(true, 1, 1);
-	out_im.reset(new QImage(out_im -> copy(AREP.x() - EWW, AREP.y() - EWH, EWW
-			* 2, EWH * 2)));
-	boost::shared_ptr<hought_t> right_eye = Hough_tm(true, AEH);
-
-	it = right_eye -> begin();
-	sumax = 0;
-	sumay = 0;
-	while(it != right_eye -> end())
-	{
-		sumax += (it -> get<0> () - AEH / 4);
-		sumay += (it -> get<1> () + AEH / 4);
-
-		it++;
-	}
-
-	rp -> second = QPoint((AREP.x() - EWW) + (sumax / right_eye -> size()),
-			(AREP.y() - EWH) + (sumay / right_eye -> size()));
-
-	QImage tmp1(inim_bak);
-	if(!d)
-	{
-		QPainter qp(&tmp1);
-		qp.setPen("red");
-		qp.drawText(rp -> first, "X");
-		qp.drawText(rp -> second, "X");
-	}
-
-	this -> setCursor(Qt::ArrowCursor);
-
-	out_im.reset(new QImage(tmp1));
-	Display_imgs();
-
-	return rp;
 }

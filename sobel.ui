@@ -166,9 +166,6 @@
      </item>
      <item>
       <widget class="QSpinBox" name="spinBox" >
-       <property name="enabled" >
-        <bool>false</bool>
-       </property>
        <property name="maximum" >
         <number>999999</number>
        </property>
@@ -255,7 +252,6 @@
       <string>Cechy</string>
      </property>
      <addaction name="actionMaska_gradient_w" />
-     <addaction name="actionOczy_Houghem" />
     </widget>
     <addaction name="actionPrzytnij" />
     <addaction name="menuCechy" />
@@ -419,14 +415,6 @@
    </property>
    <property name="text" >
     <string>Maska gradientów</string>
-   </property>
-  </action>
-  <action name="actionOczy_Houghem" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
-   <property name="text" >
-    <string>Oczy Houghem</string>
    </property>
   </action>
  </widget>
