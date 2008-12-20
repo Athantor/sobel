@@ -71,7 +71,7 @@ class SobMainWin: public QMainWindow
 		//			y-max: left 1st max, l 2nd m, right 1st m, r 2nd m
 		//			x-max: eye line, eye brows, hair, nose, mouth, chin
 	private:
-		std::auto_ptr<Ui::MainWindow> mwin_ui;
+		boost::scoped_ptr<Ui::MainWindow> mwin_ui;
 
 		boost::scoped_ptr<QImage> in_im;
 		boost::scoped_ptr<QImage> out_im;
