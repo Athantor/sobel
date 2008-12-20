@@ -9,6 +9,21 @@ INCLUDEPATH += .
 QMAKE_CXX += # -std=gnu++98
 QMAKE_CXXFLAGS_DEBUG += -O0 -Wall -Wextra -g3 -ggdb3 
 
+unix {
+    HARDWARE_PLATFORM = $$system(uname -m)
+    contains( HARDWARE_PLATFORM, x86_64 ) {
+	QMAKE_CXXFLAGS_RELEASE += -O2 -g0 -march=nocona -mtune=core2
+    } else {
+	    QMAKE_CXXFLAGS_RELEASE += -O2 -g0 -march=i686 -mtune=core2
+    }
+}
+
+win32 {
+    QMAKE_CXXFLAGS_RELEASE += -O2 -g0 -march=i686 -mtune=core2
+}
+
+
+
 # Input
 HEADERS += SobelApp.hh SobMainWin.hh
 FORMS += sobel.ui
