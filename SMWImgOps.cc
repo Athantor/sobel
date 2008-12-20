@@ -716,8 +716,6 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 
 	gradarr_t gt_x(new gradarr_t::element_type[out_im -> height()]);
 	gradarr_t gt_y(new gradarr_t::element_type[out_im -> width()]);
-	gradarr_t mx(new gradarr_t::element_type[6]);
-	gradarr_t my(new gradarr_t::element_type[4]);
 	igrads_t igt;
 	boost::shared_ptr<grad_t> rp(new grad_t(gt_x, gt_y, igt));
 

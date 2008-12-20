@@ -107,6 +107,11 @@ class SobMainWin: public QMainWindow
 			return r * (180.0 / M_PI);
 		}
 
+		inline ptrdiff_t Find_eyeline_el(uint t, uint p, gradarr_t gx )
+		{
+			return std::max_element(gx.get() + t, gx.get() + p) - gx.get();
+		}
+
 	private slots:
 		void Load_file( bool );
 		void Save_file( bool );

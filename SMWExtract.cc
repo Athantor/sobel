@@ -38,10 +38,7 @@ boost::shared_ptr<SobMainWin::feat_t> SobMainWin::Make_feats( bool )
 	const int YWDT = static_cast<int> (((out_im -> width()) * (7 / 100.0))); // Y tolerance
 
 	// eye line: looking in space between 1/4 and 3/4 image's height
-	for(int i = out_im -> height() / 4; i < out_im -> height() / 4 * 2; i++)
-	{
-		mx[0] = gt_x[mx[0]] < gt_x[i] ? i : mx[0];
-	}
+	mx[0] = Find_eyeline_el(out_im -> height() / 4, out_im -> height() / 4 * 2, gt_x);
 
 	my[1] = std::max_element(gt_y.get() + 5, gt_y.get() + (out_im -> width()
 			/ 3) + 1) - gt_y.get(); // outermost left max
