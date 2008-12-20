@@ -48,6 +48,7 @@
 #include <QColor>
 #include <QTime>
 #include <QBrush>
+#include <QPoint>
 
 #include <QPainter>
 
@@ -70,6 +71,12 @@ class SobMainWin: public QMainWindow
 		typedef boost::tuple<featarr_t, featarr_t, uint, uint, uint> feat_t; //  x-max[], y-max[], eye area tol. hgt,  face mid. x dist,  face mid. y dist
 		//			y-max: left 1st max, l 2nd m, right 1st m, r 2nd m
 		//			x-max: eye line, eye brows, hair, nose, mouth, chin
+
+		typedef std::pair<QPoint, QPoint> eyeloc_t; //left eye, right eye
+
+
+		typedef std::list<boost::tuple<uint, uint, uint> > hought_t;
+
 	private:
 		boost::scoped_ptr<Ui::MainWindow> mwin_ui;
 
@@ -128,13 +135,14 @@ class SobMainWin: public QMainWindow
 		void Lame_bin( bool );
 		void Sobel_op( bool );
 		void Canny_ed( bool );
-		void Hough_tm( bool );
+		boost::shared_ptr<hought_t> Hough_tm( bool, uint = 30 );
 		void Do_enables( bool );
 		void Display_imgs();
-		void Prep_to_extr(bool);
+		void Prep_to_extr(bool, int = 3,  bool= false);
 		boost::shared_ptr<grad_t> Make_grads( bool );
 		boost::shared_ptr<feat_t> Make_feats( bool );
 
+		boost::shared_ptr<eyeloc_t> Find_iris_ht( bool ); // hough transf
 
 		void Set_gamma_lbl( int );
 

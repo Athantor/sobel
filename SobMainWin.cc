@@ -51,6 +51,8 @@ void SobMainWin::connects()
 	connect(mwin_ui -> actionGo, SIGNAL(triggered ( bool ) ), this, SLOT(Do_auto(bool)) );
 
 	connect(mwin_ui -> actionMaska_gradient_w, SIGNAL(triggered ( bool ) ), this, SLOT(Disp_feat(bool)) );
+	connect(mwin_ui -> actionOczy_Houghem, SIGNAL(triggered ( bool ) ), this, SLOT(Find_iris_ht(bool)) );
+
 	connect(mwin_ui -> actionPrzytnij, SIGNAL(triggered ( bool ) ), this, SLOT(Crop_face(bool)) );
 
 	connect(mwin_ui -> verticalSlider, SIGNAL( sliderMoved ( int ) ), this, SLOT(Set_gamma_lbl(int)) );
@@ -104,6 +106,7 @@ void SobMainWin::Do_enables( bool e )
 	mwin_ui -> actionGo -> setEnabled(e);
 
 	mwin_ui -> actionMaska_gradient_w -> setEnabled(e);
+	mwin_ui -> actionOczy_Houghem -> setEnabled(e);
 	mwin_ui -> actionPrzytnij -> setEnabled(e);
 
 
@@ -339,15 +342,17 @@ void SobMainWin::Disp_grad( bool )
 
 }
 
-void SobMainWin::Prep_to_extr( bool d )
+void SobMainWin::Prep_to_extr( bool d, int m, bool g )
 {
 	To_gray(d);
+	if(g) Gauss_blur(d);
 	Sobel_op(d);
 	Avg_blur(d);
 	Otsus_bin(d);
-	Median_fr(d);
-	Median_fr(d);
-	Median_fr(d);
+	for(int i = 0; i < m; ++i)
+	{
+		Median_fr(d);
+	}
 }
 
 void SobMainWin::Do_auto( bool )
