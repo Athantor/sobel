@@ -147,7 +147,7 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht( bool d )
 		it++;
 	}
 
-	rp -> get<1>() = QPoint( ((AREP.x() - EWW) + (sumax / right_eye -> size())) - AEH / 2,
+	rp -> get<1>() = QPoint( ((AREP.x() - EWW) + (sumax / right_eye -> size())) - AEH / 4,
 			((AREP.y() - EWH) + (sumay / right_eye -> size())) + AEH / 2);
 
 	QImage tmp1(inim_bak);
