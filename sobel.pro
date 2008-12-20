@@ -19,7 +19,7 @@ unix {
 }
 
 win32 {
-    QMAKE_CXXFLAGS_RELEASE += -O2 -g0 -march=i686 -mtune=core2
+    QMAKE_CXXFLAGS_RELEASE += -O2 -g0 -march=i686 -mtune=nocona
 }
 
 

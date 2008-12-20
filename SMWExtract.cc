@@ -88,7 +88,7 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht( bool d )
 	QImage inim_bak(*in_im);
 	QImage outim_bak(*out_im);
 
-	Prep_to_extr(true, 1);
+	Prep_to_extr(true, 1, 1);
 
 	boost::shared_ptr<feat_t> ftrs = Make_feats(true);
 	boost::shared_ptr<eyeloc_t> rp(new eyeloc_t());
@@ -119,14 +119,14 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht( bool d )
 	uint sumay = 0;
 	while(it != left_eye -> end())
 	{
-		sumax += (it -> get<0> () - AEH / 4);
-		sumay += (it -> get<1> () + AEH / 4);
+		sumax += (it -> get<0> () );
+		sumay += (it -> get<1> () );
 
 		it++;
 	}
 
-	rp -> get<0>() = QPoint((ALEP.x() - EWW) + (sumax / left_eye -> size()),
-			(ALEP.y() - EWH) + (sumay / left_eye -> size()));
+	rp -> get<0>() = QPoint( ((ALEP.x() - EWW) + (sumax / left_eye -> size()) ) - AEH / 2,
+			((ALEP.y() - EWH) + (sumay / left_eye -> size())) + AEH / 2);
 
 	// right eye
 
@@ -141,14 +141,14 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht( bool d )
 	sumay = 0;
 	while(it != right_eye -> end())
 	{
-		sumax += (it -> get<0> () - AEH / 4);
-		sumay += (it -> get<1> () + AEH / 4);
+		sumax += (it -> get<0> () );
+		sumay += (it -> get<1> () );
 
 		it++;
 	}
 
-	rp -> get<1>() = QPoint((AREP.x() - EWW) + (sumax / right_eye -> size()),
-			(AREP.y() - EWH) + (sumay / right_eye -> size()));
+	rp -> get<1>() = QPoint( ((AREP.x() - EWW) + (sumax / right_eye -> size())) - AEH / 2,
+			((AREP.y() - EWH) + (sumay / right_eye -> size())) + AEH / 2);
 
 	QImage tmp1(inim_bak);
 	if(!d)
