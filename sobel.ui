@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>sobel</class>
- <widget class="QMainWindow" name="sobel" >
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -28,7 +28,7 @@
    </size>
   </property>
   <property name="windowTitle" >
-   <string>MainWindow</string>
+   <string>sobel</string>
   </property>
   <widget class="QWidget" name="centralwidget" >
    <widget class="Line" name="line" >
@@ -247,7 +247,14 @@
     <property name="title" >
      <string>Paszcza</string>
     </property>
+    <widget class="QMenu" name="menuCechy" >
+     <property name="title" >
+      <string>Cechy</string>
+     </property>
+     <addaction name="actionMaska_gradient_w" />
+    </widget>
     <addaction name="actionPrzytnij" />
+    <addaction name="menuCechy" />
    </widget>
    <addaction name="menuOp" />
    <addaction name="menuOp_2" />
@@ -400,6 +407,14 @@
    </property>
    <property name="text" >
     <string>Przytnij</string>
+   </property>
+  </action>
+  <action name="actionMaska_gradient_w" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>Maska gradientów</string>
    </property>
   </action>
  </widget>

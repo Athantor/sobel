@@ -50,6 +50,7 @@ void SobMainWin::connects()
 
 	connect(mwin_ui -> actionGo, SIGNAL(triggered ( bool ) ), this, SLOT(Do_auto(bool)) );
 
+	connect(mwin_ui -> actionMaska_gradient_w, SIGNAL(triggered ( bool ) ), this, SLOT(Disp_feat(bool)) );
 	connect(mwin_ui -> actionPrzytnij, SIGNAL(triggered ( bool ) ), this, SLOT(Crop_face(bool)) );
 
 	connect(mwin_ui -> verticalSlider, SIGNAL( sliderMoved ( int ) ), this, SLOT(Set_gamma_lbl(int)) );
@@ -97,7 +98,11 @@ void SobMainWin::Do_enables( bool e )
 	mwin_ui -> checkBox_2 -> setEnabled(e);
 
 	mwin_ui -> actionGo -> setEnabled(e);
+
+	mwin_ui -> actionMaska_gradient_w -> setEnabled(e);
 	mwin_ui -> actionPrzytnij -> setEnabled(e);
+
+
 }
 
 void SobMainWin::Load_file( bool )
