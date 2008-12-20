@@ -51,6 +51,7 @@ void SobMainWin::connects()
 	connect(mwin_ui -> actionGo, SIGNAL(triggered ( bool ) ), this, SLOT(Do_auto(bool)) );
 
 	connect(mwin_ui -> actionMaska_gradient_w, SIGNAL(triggered ( bool ) ), this, SLOT(Disp_feat(bool)) );
+	connect(mwin_ui -> actionOczy_houghem, SIGNAL(triggered ( bool ) ), this, SLOT(Disp_eyes_ht(bool)) );
 	connect(mwin_ui -> actionPrzytnij, SIGNAL(triggered ( bool ) ), this, SLOT(Crop_face(bool)) );
 
 	connect(mwin_ui -> verticalSlider, SIGNAL( sliderMoved ( int ) ), this, SLOT(Set_gamma_lbl(int)) );
@@ -101,9 +102,10 @@ void SobMainWin::Do_enables( bool e )
 	mwin_ui -> checkBox -> setEnabled(e);
 	mwin_ui -> checkBox_2 -> setEnabled(e);
 
-	mwin_ui -> actionGo -> setEnabled(e);
+//	mwin_ui -> actionGo -> setEnabled(e);
 
 	mwin_ui -> actionMaska_gradient_w -> setEnabled(e);
+	mwin_ui -> actionOczy_houghem -> setEnabled(e);
 	mwin_ui -> actionPrzytnij -> setEnabled(e);
 
 
@@ -339,15 +341,17 @@ void SobMainWin::Disp_grad( bool )
 
 }
 
-void SobMainWin::Prep_to_extr( bool d )
+void SobMainWin::Prep_to_extr( bool d, uint m, bool g  )
 {
 	To_gray(d);
+	if(g) Gauss_blur(d);
 	Sobel_op(d);
 	Avg_blur(d);
 	Otsus_bin(d);
-	Median_fr(d);
-	Median_fr(d);
-	Median_fr(d);
+	for(uint i = 0; i < m; i++)
+	{
+		Median_fr(d);
+	}
 }
 
 void SobMainWin::Do_auto( bool )
@@ -415,6 +419,23 @@ void SobMainWin::Disp_feat( bool d )
 	qp.drawLine(0, g -> get<4> (), tmp.width(), g -> get<4> ());
 
 	qp.end();
+
+	out_im.reset(new QImage(tmp));
+	if(!d)
+		Display_imgs();
+}
+
+void SobMainWin::Disp_eyes_ht( bool d )
+{
+	boost::shared_ptr<eyeloc_t> eyes = Find_iris_ht(true);
+
+	QImage tmp(*out_im);
+	QPainter qp(&tmp);
+	qp.setPen("red");
+
+	qp.drawText(eyes -> first, "X");
+	qp.drawText(eyes -> second, "X");
+
 
 	out_im.reset(new QImage(tmp));
 	if(!d)

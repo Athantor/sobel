@@ -567,25 +567,24 @@ void SobMainWin::Median_fr( bool d )
 	this -> setCursor(Qt::ArrowCursor);
 }
 
-void SobMainWin::Hough_tm( bool d )
+boost::shared_ptr<SobMainWin::hought_t> SobMainWin::Hough_tm( bool d, uint rad )
 {
 
 	this -> setCursor(Qt::WaitCursor);
 
 	const uint IMSIZE = out_im -> height() * out_im -> width();
-	typedef std::list<boost::tuple<uint, uint, uint> > res_t;
+	typedef hought_t res_t;
 	typedef std::vector<std::vector<uint> > acc_t;
 
 	//boost::scoped_array<uint> acc(new uint[IMSIZE]);
 	//std::fill( acc.get(), acc.get() +IMSIZE, 0);
 
 	acc_t acc(out_im -> width(), std::vector<uint>(out_im -> height(), 0));
-	res_t res(20, boost::make_tuple(0, 0, 0)); // x, y, val
+	boost::shared_ptr<res_t> res(new res_t(20, boost::make_tuple(0, 0, 0))); // x, y, val
 
 	double x0, y0;
 	double rth;
 
-	uint rad = mwin_ui -> spinBox -> value();
 	uint max = 0;
 	const uchar MAXELS = 20;
 
@@ -641,12 +640,12 @@ void SobMainWin::Hough_tm( bool d )
 	{
 		for(int x = 0; x < out_im -> width(); x++)
 		{
-			if(acc[x][y] > res.front().get<2> ())
+			if(acc[x][y] > res -> front().get<2> ())
 			{
 				res_t::iterator it;
 				bool broke = false;
 
-				for(it = res.begin(); it != res.end(); it++)
+				for(it = res -> begin(); it != res-> end(); it++)
 				{
 					if(acc[x][y] < (it -> get<2> ()))
 					{
@@ -658,16 +657,16 @@ void SobMainWin::Hough_tm( bool d )
 
 				if(broke)
 				{
-					res.insert(it, boost::make_tuple(x, y, acc[x][y]));
+					res -> insert(it, boost::make_tuple(x, y, acc[x][y]));
 				}
-				else if(it == res.end())
+				else if(it == res->end())
 				{
-					res.push_back(boost::make_tuple(x, y, acc[x][y]));
+					res -> push_back(boost::make_tuple(x, y, acc[x][y]));
 				}
 
-				while(res.size() > MAXELS)
+				while(res->size() > MAXELS)
 				{
-					res.pop_front();
+					res->pop_front();
 				}
 
 			}
@@ -675,36 +674,40 @@ void SobMainWin::Hough_tm( bool d )
 	}
 
 	QImage tmpi(*out_im);
-	QPainter qp;
-	qp.begin(&tmpi);
-
-	qp.setPen(QColor("red"));
-
-	res_t::iterator it = res.begin();
-	for(int i = 0; i < MAXELS; i++)
+	if(!d)
 	{
-		std::cout << i << ": " << (it -> get<0> ()) << " " << (it -> get<1> ())
-				<< ": " << (it -> get<2> ()) << std::endl;
-		if(it -> get<2> () > 250)
+		QPainter qp;
+		qp.begin(&tmpi);
+
+		qp.setPen(QColor("red"));
+
+		res_t::iterator it = res->begin();
+		for(int i = 0; i < MAXELS; i++)
 		{
-			qp.setPen(QColor("red"));
-		}
-		else
-		{
-			qp.setPen(QColor("red"));
+			std::cout << i << ": " << (it -> get<0> ()) << " " << (it -> get<1> ())
+					<< ": " << (it -> get<2> ()) << std::endl;
+			if(it -> get<2> () > 250)
+			{
+				qp.setPen(QColor("red"));
+			}
+			else
+			{
+				qp.setPen(QColor("red"));
+			}
+
+			qp.drawEllipse(it -> get<0> (), it -> get<1> (), rad, rad);
+			it++;
 		}
 
-		qp.drawEllipse(it -> get<0> (), it -> get<1> (), rad, rad);
-		it++;
+		qp.end();
 	}
-
-	qp.end();
 
 	out_im.reset(new QImage(tmpi));
 	if(!d)
 		Display_imgs();
 
 	this -> setCursor(Qt::ArrowCursor);
+	return res;
 }
 
 boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
