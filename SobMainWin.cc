@@ -429,12 +429,16 @@ void SobMainWin::Disp_eyes_ht( bool d )
 {
 	boost::shared_ptr<eyeloc_t> eyes = Find_iris_ht(true);
 
+
 	QImage tmp(*out_im);
 	QPainter qp(&tmp);
 	qp.setPen("red");
+	QFont qf("monospace");
+	qf.setPixelSize(eyes -> get<3>());
+	qp.setFont(qf);
 
-	qp.drawText(eyes -> first, "X");
-	qp.drawText(eyes -> second, "X");
+	qp.drawText(eyes -> get<0>(), "X");
+	qp.drawText(eyes -> get<1>(), "X");
 
 
 	out_im.reset(new QImage(tmp));

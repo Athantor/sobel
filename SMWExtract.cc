@@ -125,7 +125,7 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht( bool d )
 		it++;
 	}
 
-	rp -> first = QPoint((ALEP.x() - EWW) + (sumax / left_eye -> size()),
+	rp -> get<0>() = QPoint((ALEP.x() - EWW) + (sumax / left_eye -> size()),
 			(ALEP.y() - EWH) + (sumay / left_eye -> size()));
 
 	// right eye
@@ -147,7 +147,7 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht( bool d )
 		it++;
 	}
 
-	rp -> second = QPoint((AREP.x() - EWW) + (sumax / right_eye -> size()),
+	rp -> get<1>() = QPoint((AREP.x() - EWW) + (sumax / right_eye -> size()),
 			(AREP.y() - EWH) + (sumay / right_eye -> size()));
 
 	QImage tmp1(inim_bak);
@@ -155,14 +155,21 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht( bool d )
 	{
 		QPainter qp(&tmp1);
 		qp.setPen("red");
-		qp.drawText(rp -> first, "X");
-		qp.drawText(rp -> second, "X");
+		QFont qf("monospace");
+		qf.setPixelSize(AEH);
+		qp.setFont(qf);
+
+		qp.drawText(rp -> get<0>(), "X");
+		qp.drawText(rp -> get<1>(), "X");
 	}
 
 	this -> setCursor(Qt::ArrowCursor);
 
 	out_im.reset(new QImage(tmp1));
 	Display_imgs();
+
+	rp -> get<2>() = AEW;
+	rp -> get<3>() = AEH;
 
 	return rp;
 }

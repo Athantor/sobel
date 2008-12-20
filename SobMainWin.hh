@@ -71,7 +71,7 @@ class SobMainWin: public QMainWindow
 		//			y-max: left 1st max, l 2nd m, right 1st m, r 2nd m
 		//			x-max: eye line, eye brows, hair, nose, mouth, chin
 
-		typedef std::pair<QPoint, QPoint> eyeloc_t; // left eye, right eye
+		typedef boost::tuple<QPoint, QPoint, double, double> eyeloc_t; // left eye, right eye, eye width, eye height
 		typedef std::list<boost::tuple<uint, uint, uint> > hought_t; // x, y, val
 	private:
 		boost::scoped_ptr<Ui::MainWindow> mwin_ui;
