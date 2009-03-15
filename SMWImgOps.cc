@@ -684,8 +684,9 @@ boost::shared_ptr<SobMainWin::hought_t> SobMainWin::Hough_tm( bool d, uint rad )
 		res_t::iterator it = res->begin();
 		for(int i = 0; i < MAXELS; i++)
 		{
-			std::cout << i << ": " << (it -> get<0> ()) << " " << (it -> get<1> ())
-					<< ": " << (it -> get<2> ()) << std::endl;
+			std::cout << i << ": " << (it -> get<0> ()) << " "
+					<< (it -> get<1> ()) << ": " << (it -> get<2> ())
+					<< std::endl;
 			if(it -> get<2> () > 250)
 			{
 				qp.setPen(QColor("red"));
@@ -819,8 +820,144 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 
 }
 
-void SobMainWin::Canny_ed( bool )
+void SobMainWin::Canny_ed( bool d )
 {
 	this -> setCursor(Qt::WaitCursor);
+
+	QImage tmpi(out_im -> width(), out_im -> height(), out_im -> format());
+
+	std::vector<std::vector<uint8_t> > edir(tmpi.width(), std::vector<uint8_t>(
+			tmpi.height(), 0)); //edge direction
+	std::vector<std::vector<uint64_t> > grad(tmpi.width(),
+			std::vector<uint64_t>(tmpi.height(), 0)); //gradient value
+
+	To_gray(false);
+	Gauss_blur(false);
+
+	boost::shared_ptr<SobMainWin::grad_t> xygrads = Make_grads(false);
+
+	const uint thd1 = 128;
+	const uint thd2 = 64;
+
+	for(size_t x = 0; x < edir.size(); ++x)
+	{
+		for(size_t y = 0; y < edir[x].size(); ++y)
+		{
+			const ulong gx = xygrads -> get<0> ()[x];
+			const ulong gy = xygrads -> get<1> ()[y];
+
+			grad[x][y] = std::sqrt(std::pow(gx, 2) + std::pow(gy, 2));
+			const double thisAngle = r2d(std::atan2(gx, gy));
+			uint8_t newAngle = 0;
+
+			if(((thisAngle < 22.5) && (thisAngle > -22.5)) || (thisAngle
+					> 157.5) || (thisAngle < -157.5))
+				newAngle = 0;
+			if(((thisAngle > 22.5) && (thisAngle < 67.5)) || ((thisAngle
+					< -112.5) && (thisAngle > -157.5)))
+				newAngle = 45;
+			if(((thisAngle > 67.5) && (thisAngle < 112.5)) || ((thisAngle
+					< -67.5) && (thisAngle > -112.5)))
+				newAngle = 90;
+			if(((thisAngle > 112.5) && (thisAngle < 157.5)) || ((thisAngle
+					< -22.5) && (thisAngle > -67.5)))
+				newAngle = 135;
+
+			edir[x][y] = newAngle;
+
+		}
+	}
+
+	for(size_t x = 0; x < edir.size(); ++x)
+	{
+		for(size_t y = 0; y < edir[x].size(); ++y)
+		{
+			if(x > 0 && y > 0 && (grad[x][y] > thd1))
+			{
+				switch(edir[x][y])
+				{
+					case 0:
+						canny_edge_trace(*out_im, 0, x, y,
+								std::make_pair(0, 1), edir, grad, thd1, thd2);
+					case 45:
+						canny_edge_trace(*out_im, 45, x, y,
+								std::make_pair(1, 1), edir, grad, thd1, thd2);
+					case 90:
+						canny_edge_trace(*out_im, 90, x, y,
+								std::make_pair(1, 0), edir, grad, thd1, thd2);
+					case 135:
+						canny_edge_trace(*out_im, 135, x, y, std::make_pair(1,
+								-1), edir, grad, thd1, thd2);
+					default:
+						out_im -> setPixel(x, y, qRgb(255, 255, 255));
+				}
+			}
+		}
+	}
+
+	out_im.reset(new QImage(tmpi));
+	if(!d)
+		Display_imgs();
+
 	this -> setCursor(Qt::ArrowCursor);
+}
+
+void SobMainWin::canny_edge_trace( QImage &qi, uint8_t dir, uint64_t row,
+		uint64_t col, std::pair<int8_t, int8_t> shift, const std::vector<
+				std::vector<uint8_t> > &edirs, const std::vector<std::vector<
+				uint64_t> > & grads, const uint64_t t1, const uint64_t t2 )
+{
+	uint64_t lrow, lcol;
+	lrow = lcol = 0;
+	bool doit = true;
+
+	lrow = canny_et_mkrowcol(qi.width(), row, shift.first, doit);
+	lcol = canny_et_mkrowcol(qi.height(), col, shift.second, doit);
+
+	doit = (not (lrow == std::numeric_limits<uint64_t>::max() || lcol
+					== std::numeric_limits<uint64_t>::max()));
+
+	while(doit && (edirs[lrow][lcol] == dir) && (grads[lrow][lcol] > t2))
+	{
+		qi.setPixel(lrow, lcol, qRgb(0, 0, 0));
+
+		//std::cout << lrow << " - " << lcol << ": " << doit << std::endl;
+
+		lrow = canny_et_mkrowcol(qi.width(), lrow, shift.first, doit);
+		lcol = canny_et_mkrowcol(qi.height(), lcol, shift.second, doit);
+
+		doit = (not (lrow == std::numeric_limits<uint64_t>::max() || lcol
+						== std::numeric_limits<uint64_t>::max()));
+
+	//	std::cout << "** " << lrow << " - " << lcol << std::endl;
+
+	}
+}
+
+uint64_t SobMainWin::canny_et_mkrowcol( uint64_t max, uint64_t curr,
+		int8_t shift, bool & eend ) const
+{
+
+	if(shift < 0)
+	{
+		if(curr > 0)
+		{
+			return curr + shift;
+		}
+		else
+		{
+			eend = true;
+			return std::numeric_limits<uint64_t>::max();
+		}
+	}
+	else if(curr < (max - 1))
+	{
+		return curr + shift;
+	}
+	else
+	{
+		eend = true;
+		return std::numeric_limits<uint64_t>::max();
+	}
+
 }

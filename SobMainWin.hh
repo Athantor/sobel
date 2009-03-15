@@ -29,6 +29,7 @@
 #include <vector>
 #include <list>
 #include <functional>
+#include <limits>
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/scoped_array.hpp>
@@ -36,6 +37,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/numeric/conversion/cast.hpp>
+#include <boost/foreach.hpp>
 
 #include <QMainWindow>
 #include <QImage>
@@ -57,7 +59,7 @@ class SobMainWin: public QMainWindow
 {
 	Q_OBJECT
 
-		public:
+	public:
 		SobMainWin();
 		~SobMainWin();
 
@@ -86,7 +88,6 @@ class SobMainWin: public QMainWindow
 		const double XTOLPCT;
 		const double YTOLPCT;
 
-
 		void connects();
 
 		QRgb To_gray( QRgb );
@@ -114,10 +115,16 @@ class SobMainWin: public QMainWindow
 			return r * (180.0 / M_PI);
 		}
 
-		inline ptrdiff_t Find_eyeline_el(uint t, uint p, gradarr_t gx )
+		inline ptrdiff_t Find_eyeline_el( uint t, uint p, gradarr_t gx )
 		{
 			return std::max_element(gx.get() + t, gx.get() + p) - gx.get();
 		}
+
+	private:
+		void canny_edge_trace( QImage &, uint8_t, uint64_t, uint64_t,
+				std::pair<int8_t, int8_t>, const std::vector<std::vector<
+						uint8_t> > &, const std::vector<std::vector<uint64_t> > &, const uint64_t, const uint64_t );
+		uint64_t canny_et_mkrowcol( uint64_t, uint64_t, int8_t, bool & ) const;
 
 	private slots:
 		void Load_file( bool );
@@ -131,10 +138,11 @@ class SobMainWin: public QMainWindow
 		void Lame_bin( bool );
 		void Sobel_op( bool );
 		void Canny_ed( bool );
+
 		boost::shared_ptr<hought_t> Hough_tm( bool, uint = 30 );
 		void Do_enables( bool );
 		void Display_imgs();
-		void Prep_to_extr(bool, uint = 3, bool = false);
+		void Prep_to_extr( bool, uint = 3, bool = false );
 		boost::shared_ptr<grad_t> Make_grads( bool );
 		boost::shared_ptr<feat_t> Make_feats( bool );
 
