@@ -50,6 +50,11 @@
 #include <QColor>
 #include <QTime>
 #include <QBrush>
+#include <QProgressDialog>
+#include <QTextStream>
+#include <QFile>
+#include <QDateTime>
+#include <QInputDialog>
 
 #include <QPainter>
 
