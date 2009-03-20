@@ -30,7 +30,7 @@
 class SobelApp: public QApplication
 {
 	public:
-		SobelApp( int, char ** );
+		SobelApp( int &, char ** );
 		~SobelApp();
 
 	private:
