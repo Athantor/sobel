@@ -834,12 +834,12 @@ void SobMainWin::Canny_ed( bool d )
 //	Otsus_bin(false);
 
 	boost::shared_ptr<SobMainWin::grad_t> xygrads = Make_grads(false);
-	
+
 	QImage tmpi(out_im -> width(), out_im -> height(), out_im -> format());
 
 	const uint thd1 = QInputDialog::getInt(this, "threshold", "thd1", 80, 0, 255);
 	const uint thd2 = QInputDialog::getInt(this, "threshold", "thd2", 30, 0, 255);
-	
+
 	qpd.setMaximum( (tmpi.height() * tmpi.width() ) * 2);
 	ulong ctr = 0;
 	qpd.setCancelButton(0);
@@ -850,9 +850,9 @@ void SobMainWin::Canny_ed( bool d )
 	{
 		for(size_t y = 0; y < edir[x].size(); ++y)
 		{
-			
+
 			qpd.setValue(ctr++);
-		
+
 			const ulong gx = qRed(xygrads -> get<2> ().first->pixel(x, y));
 			const ulong gy = qRed(xygrads -> get<2> ().second->pixel(x, y));
 
@@ -878,14 +878,14 @@ void SobMainWin::Canny_ed( bool d )
 		}
 	}
 
-	qpd.setLabelText(QString::fromUtf8("Sledzenie krawędzi"));
+	qpd.setLabelText(QString::fromUtf8("Śledzenie krawędzi"));
 	for(size_t x = 0; x < edir.size(); ++x)
 	{
 		for(size_t y = 0; y < edir[x].size(); ++y)
 		{
 			qpd.setValue(ctr++);
-			
-		
+
+
 			if(x > 0 && y > 0 && (grad[x][y] > thd1))
 			{
 				switch(edir[x][y])
@@ -924,43 +924,25 @@ void SobMainWin::canny_edge_trace( QImage &qi, uint8_t dir, uint64_t row,
 	uint64_t lrow, lcol;
 	lrow = lcol = 0;
 	bool doit = true;
-	
-/*	QFile file("C:\\cannylog.txt");
-     if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
-         return; 
 
-     QTextStream outfn(&file);
-*/
 	lrow = canny_et_mkrowcol(qi.width(), row, shift.first, doit);
 	lcol = canny_et_mkrowcol(qi.height(), col, shift.second, doit);
-	
-/*	outfn << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz") << ": (f) edirs[" << lrow <<"]["<<lcol << "] =" << edirs[lrow] [lcol] << "; grad["
-			<< lrow <<"]["<<lcol << "] =" << grads[lrow][lcol] << "\r\n";
-*/
+
 	doit = (not (lrow == std::numeric_limits<uint64_t>::max() || lcol
 					== std::numeric_limits<uint64_t>::max()));
 
 	while(doit && (edirs[lrow][lcol] == dir) && (grads[lrow][lcol] > t2))
 	{
 		qi.setPixel(lrow, lcol, qRgb(0, 0, 0));
-		
-/*		outfn << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz") << ": (l) edirs[" << lrow <<"]["<<lcol << "] =" << edirs[lrow] [lcol] << "; grad["
-			<< lrow <<"]["<<lcol << "] =" << grads[lrow][lcol] << "\r\n";
-*/
-	//	std::cout << lrow << " - " << lcol << ": " << doit << std::endl;
 
 		lrow = canny_et_mkrowcol(qi.width(), lrow, shift.first, doit);
 		lcol = canny_et_mkrowcol(qi.height(), lcol, shift.second, doit);
-		
+
 		doit = (not (lrow == std::numeric_limits<uint64_t>::max() || lcol
 						== std::numeric_limits<uint64_t>::max()));
 
-	//	std::cout << "** " << lrow << " - " << lcol << std::endl;
-
 	}
-	
-	//file.close();
-	
+
 }
 
 uint64_t SobMainWin::canny_et_mkrowcol( uint64_t max, uint64_t curr,
