@@ -893,18 +893,25 @@ void SobMainWin::Canny_ed( bool d )
 					case 0:
 						canny_edge_trace(tmpi, 0, x, y,
 								std::make_pair(0, 1), edir, grad, thd1, thd2);
+						break;
 					case 45:
 						canny_edge_trace(tmpi, 45, x, y,
 								std::make_pair(1, 1), edir, grad, thd1, thd2);
+						break;
 					case 90:
 						canny_edge_trace(tmpi, 90, x, y,
 								std::make_pair(1, 0), edir, grad, thd1, thd2);
+						break;
 					case 135:
 						canny_edge_trace(tmpi, 135, x, y, std::make_pair(1,
 								-1), edir, grad, thd1, thd2);
+						break;
 					default:
 						tmpi. setPixel(x, y, qRgb(255, 255, 255));
+						break;
 				}
+			} else {
+				tmpi. setPixel(x, y, qRgb(255, 255, 255));
 			}
 		}
 	}
