@@ -60,112 +60,107 @@
 
 #include "ui_sobel.h"
 
-class SobMainWin: public QMainWindow
-{
-	Q_OBJECT
+class SobMainWin: public QMainWindow {
+Q_OBJECT
 
-	public:
-		SobMainWin();
-		~SobMainWin();
+public:
+	SobMainWin();
+	~SobMainWin();
 
-		typedef boost::shared_array<ulong> gradarr_t;
-		typedef std::pair<boost::shared_ptr<QImage>, boost::shared_ptr<QImage> >
-				igrads_t; //x-grad img, y-grad img
-		typedef boost::tuple<gradarr_t, gradarr_t, igrads_t> grad_t; //grad-x, grad-y, grad images
+	typedef boost::shared_array<int64_t> gradarr_t;
+	typedef std::pair<boost::shared_ptr<QImage>, boost::shared_ptr<QImage> >
+			igrads_t; //x-grad img, y-grad img
+	typedef std::pair<gradarr_t, gradarr_t> vgrads_t; // raw: x-grad vals, y-grad vals
+	typedef boost::tuple<gradarr_t, gradarr_t, igrads_t, vgrads_t> grad_t; //grad-x, grad-y, grad images, grad vals
 
-		typedef gradarr_t featarr_t;
-		typedef boost::tuple<featarr_t, featarr_t, uint, uint, uint> feat_t; //  x-max[], y-max[], eye area tol. hgt,  face mid. x dist,  face mid. y dist
-		//			y-max: left 1st max, l 2nd m, right 1st m, r 2nd m
-		//			x-max: eye line, eye brows, hair, nose, mouth, chin
+	typedef gradarr_t featarr_t;
+	typedef boost::tuple<featarr_t, featarr_t, uint, uint, uint> feat_t; //  x-max[], y-max[], eye area tol. hgt,  face mid. x dist,  face mid. y dist
+	//			y-max: left 1st max, l 2nd m, right 1st m, r 2nd m
+	//			x-max: eye line, eye brows, hair, nose, mouth, chin
 
-		typedef boost::tuple<QPoint, QPoint, double, double> eyeloc_t; // left eye, right eye, eye width, eye height
-		typedef std::list<boost::tuple<uint, uint, uint> > hought_t; // x, y, val
-	private:
-		boost::scoped_ptr<Ui::MainWindow> mwin_ui;
+	typedef boost::tuple<QPoint, QPoint, double, double> eyeloc_t; // left eye, right eye, eye width, eye height
+	typedef std::list<boost::tuple<uint, uint, uint> > hought_t; // x, y, val
+private:
+	boost::scoped_ptr<Ui::MainWindow> mwin_ui;
 
-		boost::scoped_ptr<QImage> in_im;
-		boost::scoped_ptr<QImage> out_im;
-		QString fn;
+	boost::scoped_ptr<QImage> in_im;
+	boost::scoped_ptr<QImage> out_im;
+	QString fn;
 
-		bool sobel;
-		bool bin;
+	bool sobel;
+	bool bin;
 
-		const double XTOLPCT;
-		const double YTOLPCT;
+	const double XTOLPCT;
+	const double YTOLPCT;
 
-		void connects();
+	void connects();
 
-		QRgb To_gray( QRgb );
-		//void Gamma( float );
-		void Smooth();
-		//void Binarize();
+	QRgb To_gray(QRgb);
+	//void Gamma( float );
+	void Smooth();
+	//void Binarize();
 
-		void Pss( int, const QString & cmt = QString() );
+	void Pss(int, const QString & cmt = QString());
 
-		inline int n_rgb( int r )
-		{
-			int myr = r > 255 ? 255 : r;
-			myr = myr < 0 ? 0 : myr;
+	inline int n_rgb(int r) {
+		int myr = r > 255 ? 255 : r;
+		myr = myr < 0 ? 0 : myr;
 
-			return myr;
-		}
+		return myr;
+	}
 
-		inline double d2r( double d )
-		{
-			return (d * M_PI) / 180.0;
-		}
+	inline double d2r(double d) {
+		return (d * M_PI) / 180.0;
+	}
 
-		inline double r2d( double r )
-		{
-			return r * (180.0 / M_PI);
-		}
+	inline double r2d(double r) {
+		return r * (180.0 / M_PI);
+	}
 
-		inline ptrdiff_t Find_eyeline_el( uint t, uint p, gradarr_t gx )
-		{
-			return std::max_element(gx.get() + t, gx.get() + p) - gx.get();
-		}
+	inline ptrdiff_t Find_eyeline_el(uint t, uint p, gradarr_t gx) {
+		return std::max_element(gx.get() + t, gx.get() + p) - gx.get();
+	}
 
-	private:
-		void canny_edge_trace( QImage &, uint8_t, uint64_t, uint64_t,
-				std::pair<int8_t, int8_t>, const std::vector<std::vector<
-						uint8_t> > &,
-				const std::vector<std::vector<uint64_t> > &, const uint64_t,
-				const uint64_t );
-		void canny_supr_nonmax( QImage &, uint8_t, uint64_t, uint64_t, std::pair<
-				int8_t, int8_t>, const std::vector<std::vector<uint8_t> > &,
-				const std::vector<std::vector<uint64_t> > &, const uint64_t );
-		uint64_t canny_et_mkrowcol( uint64_t, uint64_t, int8_t, bool & ) const;
+private:
+	void canny_edge_trace(QImage &, uint8_t, uint64_t, uint64_t, std::pair<
+			int8_t, int8_t>, const std::vector<std::vector<uint8_t> > &,
+			const std::vector<std::vector<uint64_t> > &, const uint64_t,
+			const uint64_t);
+	void canny_supr_nonmax(QImage &, uint8_t, uint64_t, uint64_t, std::pair<
+			int8_t, int8_t>, const std::vector<std::vector<uint8_t> > &,
+			const std::vector<std::vector<uint64_t> > &, const uint64_t);
+	uint64_t canny_et_mkrowcol(uint64_t, uint64_t, int8_t, bool &) const;
 
-	private slots:
-		void Load_file( bool );
-		void Save_file( bool );
-		void Do_ops( bool );
-		void To_gray( bool = false );
-		void Avg_blur( bool );
-		void Gauss_blur( bool );
-		void Median_fr( bool );
-		void Otsus_bin( bool );
-		void Lame_bin( bool );
-		void Sobel_op( bool );
-		void Canny_ed( bool );
+private slots:
+	void Load_file(bool);
+	void Save_file(bool);
+	void Do_ops(bool);
+	void To_gray(bool = false);
+	void Avg_blur(bool);
+	void Gauss_blur(bool);
+	void Median_fr(bool);
+	void Otsus_bin(bool);
+	void Lame_bin(bool);
+	void Sobel_op(bool);
+	void Canny_ed(bool);
 
-		boost::shared_ptr<hought_t> Hough_tm( bool, uint = 30 );
-		void Do_enables( bool );
-		void Display_imgs();
-		void Prep_to_extr( bool, uint = 3, bool = false );
-		boost::shared_ptr<grad_t> Make_grads( bool );
-		boost::shared_ptr<feat_t> Make_feats( bool );
+	boost::shared_ptr<hought_t> Hough_tm(bool, uint = 30);
+	void Do_enables(bool);
+	void Display_imgs();
+	void Prep_to_extr(bool, uint = 3, bool = false);
+	boost::shared_ptr<grad_t> Make_grads(bool);
+	boost::shared_ptr<feat_t> Make_feats(bool);
 
-		boost::shared_ptr<SobMainWin::eyeloc_t> Find_iris_ht( bool );
+	boost::shared_ptr<SobMainWin::eyeloc_t> Find_iris_ht(bool);
 
-		void Set_gamma_lbl( int );
+	void Set_gamma_lbl(int);
 
-		void Disp_grad( bool );
-		void Disp_feat( bool );
-		void Disp_eyes_ht( bool );
-		void Crop_face( bool );
+	void Disp_grad(bool);
+	void Disp_feat(bool);
+	void Disp_eyes_ht(bool);
+	void Crop_face(bool);
 
-		void Do_auto( bool );
+	void Do_auto(bool);
 
 };
 
