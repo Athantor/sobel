@@ -329,7 +329,7 @@ void SobMainWin::Sobel_op( bool d )
 	{
 		for(int x = 1; x < in_im -> width()-1; x++)
 		{
-			/*sumx = sumy = 0;
+			sumx = sumy = 0;
 
 			if((y == 0) or (y + 1 >= in_im -> height()))
 			{
@@ -340,7 +340,7 @@ void SobMainWin::Sobel_op( bool d )
 				sum = 0;
 			}
 			else
-			{*/
+			{
 				for(int i = -1; i <= 1; i++)
 				{
 					for(int j = -1; j <= 1; j++)
@@ -352,23 +352,13 @@ void SobMainWin::Sobel_op( bool d )
 					}
 				}
 
-			/*	if(sumx > 255)
-					sumx = 255;
-				if(sumx < 0)
-					sumx = 0;
-
-				if(sumy > 255)
-					sumy = 255;
-				if(sumy < 0)
-					sumy = 0;
-*/
-				//sum = std::abs(sumx) + std::abs(sumy);
-				sum = 255 - std::sqrt( std::pow(sumx, 2.0) + std::pow(sumy, 2.0) );
+			//	sum = std::abs(sumx) + std::abs(sumy);
+				sum = static_cast<int>(255 - std::sqrt( std::pow(sumx, 2.0) + std::pow(sumy, 2.0) ));
 				sum = sum > 255 ? 255 : sum;
 				sum = sum < 0 ? 0 : sum;
-		//	}
+			}
 
-		//	sum =  static_cast<uchar> (sum);
+			sum =  static_cast<uchar> (sum);
 
 			out_im -> setPixel(x, y, qRgb(sum, sum, sum));
 
