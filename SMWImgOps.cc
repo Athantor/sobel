@@ -306,6 +306,7 @@ void SobMainWin::Sobel_op( bool d )
 	tmr.start();
 	this -> setCursor(Qt::WaitCursor);
 
+
 	//if(not bin) To_gray();
 	if(mwin_ui -> checkBox -> isEnabled())
 		Smooth();
@@ -316,17 +317,19 @@ void SobMainWin::Sobel_op( bool d )
 	int8_t Gx[3][3] = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
 	int8_t Gy[3][3] = { { 1, 2, 1 }, { 0, 0, 0 }, { -1, -2, -1 } };
 
+	boost::scoped_ptr<QImage> tmp(new QImage(*out_im));
+
 	// Scharr
 	// int8_t Gx[3][3] = { {3,10,3}, {0,0,0}, {-3,-10,-3} };
 	// int8_t Gy[3][3] = { {3,0,-3}, {10,0,-10} , {3,0,-3} };
 
-	int sumx, sumy, sum = 0;
+	int sumx = 0, sumy = 0, sum = 0;
 
-	for(int y = 0; y < in_im -> height(); y++)
+	for(int y = 1; y < in_im -> height()-1; y++)
 	{
-		for(int x = 0; x < in_im -> width(); x++)
+		for(int x = 1; x < in_im -> width()-1; x++)
 		{
-			sumx = sumy = 0;
+			/*sumx = sumy = 0;
 
 			if((y == 0) or (y + 1 >= in_im -> height()))
 			{
@@ -337,19 +340,19 @@ void SobMainWin::Sobel_op( bool d )
 				sum = 0;
 			}
 			else
-			{
+			{*/
 				for(int i = -1; i <= 1; i++)
 				{
 					for(int j = -1; j <= 1; j++)
 					{
-						sumx += (qBlue(in_im -> pixel(x + i, y + j))
-								* Gx[i + 1][j + 1]);
-						sumy += (qBlue(in_im -> pixel(x + i, y + j))
-								* Gy[i + 1][j + 1]);
+						QRgb mspx= tmp -> pixel(x + i, y + j);
+
+						sumx += qRed(mspx) * Gx[i+1][j+1];
+						sumy += qRed(mspx) * Gy[i+1][j+1];
 					}
 				}
 
-				if(sumx > 255)
+			/*	if(sumx > 255)
 					sumx = 255;
 				if(sumx < 0)
 					sumx = 0;
@@ -358,13 +361,16 @@ void SobMainWin::Sobel_op( bool d )
 					sumy = 255;
 				if(sumy < 0)
 					sumy = 0;
+*/
+				//sum = std::abs(sumx) + std::abs(sumy);
+				sum = 255 - std::sqrt( std::pow(sumx, 2.0) + std::pow(sumy, 2.0) );
+				sum = sum > 255 ? 255 : sum;
+				sum = sum < 0 ? 0 : sum;
+		//	}
 
-				sum = std::abs(sumx) + std::abs(sumy);
-			}
+		//	sum =  static_cast<uchar> (sum);
 
-			sum = 255 - static_cast<uchar> (sum);
-
-			out_im -> setPixel(x, y, QColor(sum, sum, sum).rgb());
+			out_im -> setPixel(x, y, qRgb(sum, sum, sum));
 
 		}
 	}
@@ -822,42 +828,60 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads( bool )
 void SobMainWin::Canny_ed( bool d )
 {
 	this -> setCursor(Qt::WaitCursor);
-	QProgressDialog qpd(this, Qt::Dialog );
+	QProgressDialog qpd(this, Qt::Dialog);
 
-	std::vector<std::vector<uint8_t> > edir(out_im->width(), std::vector<uint8_t>(
-			out_im->height(), 0)); //edge direction
-	std::vector<std::vector<uint64_t> > grad(out_im->width(),
-			std::vector<uint64_t>(out_im->height(), 0)); //gradient value
+	std::vector<std::vector<uint8_t> > edir(out_im->width(), std::vector<
+			uint8_t>(out_im->height(), 0)); //edge direction
+	std::vector<std::vector<uint64_t> > grad(out_im->width(), std::vector<
+			uint64_t>(out_im->height(), 0)); //gradient value
 
 	To_gray(false);
 	Gauss_blur(false);
-//	Otsus_bin(false);
+	//	Otsus_bin(false);
 
-	boost::shared_ptr<SobMainWin::grad_t> xygrads = Make_grads(false);
+	//boost::shared_ptr<SobMainWin::grad_t> xygrads = Make_grads(false);
 
-	QImage tmpi(out_im -> width(), out_im -> height(), out_im -> format());
+	QImage tmpi(*out_im);
 
-	const uint thd1 = QInputDialog::getInt(this, "threshold", "thd1", 80, 0, 255);
-	const uint thd2 = QInputDialog::getInt(this, "threshold", "thd2", 30, 0, 255);
+	const uint thd1 = QInputDialog::getInt(this, "threshold", "thd1", 80, 0,
+			255);
+	const uint thd2 = QInputDialog::getInt(this, "threshold", "thd2", 30, 0,
+			255);
 
-	qpd.setMaximum( (tmpi.height() * tmpi.width() ) * 2);
+	int8_t SGx[3][3] = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
+	int8_t SGy[3][3] = { { 1, 2, 1 }, { 0, 0, 0 }, { -1, -2, -1 } };
+
+	qpd.setMaximum((tmpi.height() * tmpi.width()) * 4);
 	ulong ctr = 0;
 	qpd.setCancelButton(0);
 	qpd.show();
 
 	qpd.setLabelText(QString::fromUtf8("Wyliczanie kąta krawędzi"));
-	for(size_t x = 0; x < edir.size(); ++x)
+	for(size_t x = 1; x < edir.size()-1; ++x)
 	{
-		for(size_t y = 0; y < edir[x].size(); ++y)
+		for(size_t y = 1; y < edir[x].size()-1; ++y)
 		{
 
 			qpd.setValue(ctr++);
 
-			const ulong gx = qRed(xygrads -> get<2> ().first->pixel(x, y));
-			const ulong gy = qRed(xygrads -> get<2> ().second->pixel(x, y));
+			int gx=0, gy=0;
+			for(char sox = -1; sox <= 1; sox++)
+			{
+				for(char soy = -1;  soy <= 1; soy++)
+				{
+					QRgb mspx = tmpi.pixel(x+sox, y+soy);
+					gx += qRed(mspx) * SGx[sox+1][soy+1];
+					gy += qRed(mspx) * SGy[sox+1][soy+1];
+				}
+			}
 
-			grad[x][y] = std::sqrt(std::pow((double)gx, 2.0) + std::pow(gy, 2.0));
-			const double thisAngle = r2d(std::atan2(gy, gx));
+	//		const ulong gx = qRed(xygrads -> get<2> ().first->pixel(x, y));
+		//	const ulong gy = qRed(xygrads -> get<2> ().second->pixel(x, y));
+
+			grad[x][y] = std::sqrt(std::pow((double) gx, 2.0) + std::pow(gy,
+					2.0));
+
+			const double thisAngle = (std::atan2(gx, gy) / M_PI) * 180.0;
 			uint8_t newAngle = 0;
 
 			if(((thisAngle < 22.5) && (thisAngle > -22.5)) || (thisAngle
@@ -885,33 +909,85 @@ void SobMainWin::Canny_ed( bool d )
 		{
 			qpd.setValue(ctr++);
 
-
 			if(x > 0 && y > 0 && (grad[x][y] > thd1))
 			{
 				switch(edir[x][y])
 				{
 					case 0:
-						canny_edge_trace(tmpi, 0, x, y,
-								std::make_pair(0, 1), edir, grad, thd1, thd2);
+						canny_edge_trace(tmpi, 0, x, y, std::make_pair(0, 1),
+								edir, grad, thd1, thd2);
 						break;
 					case 45:
-						canny_edge_trace(tmpi, 45, x, y,
-								std::make_pair(1, 1), edir, grad, thd1, thd2);
+						canny_edge_trace(tmpi, 45, x, y, std::make_pair(1, 1),
+								edir, grad, thd1, thd2);
 						break;
 					case 90:
-						canny_edge_trace(tmpi, 90, x, y,
-								std::make_pair(1, 0), edir, grad, thd1, thd2);
+						canny_edge_trace(tmpi, 90, x, y, std::make_pair(1, 0),
+								edir, grad, thd1, thd2);
 						break;
 					case 135:
-						canny_edge_trace(tmpi, 135, x, y, std::make_pair(1,
-								-1), edir, grad, thd1, thd2);
+						canny_edge_trace(tmpi, 135, x, y,
+								std::make_pair(1, -1), edir, grad, thd1, thd2);
 						break;
 					default:
 						tmpi. setPixel(x, y, qRgb(255, 255, 255));
 						break;
 				}
-			} else {
+			}
+			else
+			{
 				tmpi. setPixel(x, y, qRgb(255, 255, 255));
+			}
+		}
+	}
+
+	qpd.setLabelText(QString::fromUtf8("Usuwanie niezmienionych"));
+	for(size_t x = 0; x < edir.size(); ++x)
+	{
+		for(size_t y = 0; y < edir[x].size(); ++y)
+		{
+			qpd.setValue(ctr++);
+
+			QRgb qr = tmpi.pixel(x, y);
+
+			if(qRed(qr) != 0 && qRed(qr) != 255)
+			{
+				tmpi.setPixel(x, y, qRgb(255, 255, 255));
+			}
+
+		}
+	}
+
+	qpd.setLabelText(QString::fromUtf8("Supresja niemaksymalnych"));
+	for(size_t x = 0; x < edir.size(); ++x)
+	{
+		for(size_t y = 0; y < edir[x].size(); ++y)
+		{
+			qpd.setValue(ctr++);
+			if(qRed(tmpi.pixel(x, y)) == 255)
+			{
+				switch(edir[x][y])
+				{
+					case 0:
+						canny_supr_nonmax(tmpi, 0, x, y, std::make_pair(1, 0),
+								edir, grad, thd2);
+						break;
+					case 45:
+						canny_supr_nonmax(tmpi, 45, x, y, std::make_pair(1, -1),
+								edir, grad,  thd2);
+						break;
+					case 90:
+						canny_supr_nonmax(tmpi, 90, x, y, std::make_pair(0, 1),
+								edir, grad,  thd2);
+						break;
+					case 135:
+						canny_supr_nonmax(tmpi, 135, x, y,
+								std::make_pair(1, 1), edir, grad, thd2);
+						break;
+					default:
+						break;
+				}
+
 			}
 		}
 	}
@@ -926,7 +1002,7 @@ void SobMainWin::Canny_ed( bool d )
 void SobMainWin::canny_edge_trace( QImage &qi, uint8_t dir, uint64_t row,
 		uint64_t col, std::pair<int8_t, int8_t> shift, const std::vector<
 				std::vector<uint8_t> > &edirs, const std::vector<std::vector<
-				uint64_t> > & grads, const uint64_t t1, const uint64_t t2 )
+				uint64_t> > & grads, const uint64_t, const uint64_t t2 )
 {
 	uint64_t lrow, lcol;
 	lrow = lcol = 0;
@@ -936,7 +1012,7 @@ void SobMainWin::canny_edge_trace( QImage &qi, uint8_t dir, uint64_t row,
 	lcol = canny_et_mkrowcol(qi.height(), col, shift.second, doit);
 
 	doit = (not (lrow == std::numeric_limits<uint64_t>::max() || lcol
-					== std::numeric_limits<uint64_t>::max()));
+			== std::numeric_limits<uint64_t>::max()));
 
 	while(doit && (edirs[lrow][lcol] == dir) && (grads[lrow][lcol] > t2))
 	{
@@ -946,8 +1022,80 @@ void SobMainWin::canny_edge_trace( QImage &qi, uint8_t dir, uint64_t row,
 		lcol = canny_et_mkrowcol(qi.height(), lcol, shift.second, doit);
 
 		doit = (not (lrow == std::numeric_limits<uint64_t>::max() || lcol
-						== std::numeric_limits<uint64_t>::max()));
+				== std::numeric_limits<uint64_t>::max()));
 
+	}
+
+}
+
+void SobMainWin::canny_supr_nonmax( QImage &qi, uint8_t dir, uint64_t row,
+		uint64_t col, std::pair<int8_t, int8_t> shift, const std::vector<
+				std::vector<uint8_t> > &edirs, const std::vector<std::vector<
+				uint64_t> > & grads, const uint64_t )
+{
+
+	uint64_t lrow, lcol;
+	lrow = lcol = 0;
+	bool doit = true;
+	std::vector<std::vector<float> > nmax(qi.width(),
+			std::vector<float>(3, 0.0));
+	std::vector<int> max(3, 0);
+	uint64_t nmaxctr = 0;
+
+	lrow = canny_et_mkrowcol(qi.width(), row, shift.first, doit);
+	lcol = canny_et_mkrowcol(qi.height(), col, shift.second, doit);
+
+	doit = (not (lrow == std::numeric_limits<uint64_t>::max() || lcol
+			== std::numeric_limits<uint64_t>::max()));
+
+	while(doit && (edirs[lrow][lcol] == dir) && (qRed(qi.pixel(lrow, lcol))
+			== 0))
+	{
+		lrow = canny_et_mkrowcol(qi.width(), lrow, shift.first, doit);
+		lcol = canny_et_mkrowcol(qi.height(), lcol, shift.second, doit);
+
+		doit = (not (lrow == std::numeric_limits<uint64_t>::max() || lcol
+				== std::numeric_limits<uint64_t>::max()));
+
+		nmax[nmaxctr][0] = lrow;
+		nmax[nmaxctr][1] = lcol;
+		nmax[nmaxctr][2] = grads[lrow][lcol];
+		nmaxctr++;
+	}
+
+	doit = true;
+	shift = std::make_pair(-1, -1);
+	lrow = canny_et_mkrowcol(qi.width(), row, shift.first, doit);
+	lcol = canny_et_mkrowcol(qi.height(), col, shift.second, doit);
+
+	doit = (not (lrow == std::numeric_limits<uint64_t>::max() || lcol
+			== std::numeric_limits<uint64_t>::max()));
+	while(doit && (edirs[lrow][lcol] == dir) && (qRed(qi.pixel(lrow, lcol))
+			== 0))
+	{
+		lrow = canny_et_mkrowcol(qi.width(), lrow, shift.first, doit);
+		lcol = canny_et_mkrowcol(qi.height(), lcol, shift.second, doit);
+
+		doit = (not (lrow == std::numeric_limits<uint64_t>::max() || lcol
+				== std::numeric_limits<uint64_t>::max()));
+
+		nmax[nmaxctr][0] = lrow;
+		nmax[nmaxctr][1] = lcol;
+		nmax[nmaxctr][2] = grads[lrow][lcol];
+		nmaxctr++;
+	}
+
+	for(uint64_t ctr = 0; ctr < nmaxctr; ++ctr)
+	{
+		if(nmax[ctr][2] > max[2])
+		{
+			std::copy(nmax[ctr].begin(), nmax[ctr].end(), max.begin());
+		}
+	}
+
+	for(uint64_t ctr = 0; ctr < nmaxctr; ++ctr)
+	{
+		qi.setPixel(nmax[ctr][0], nmax[ctr][1], qRgb(255, 255, 255));
 	}
 
 }

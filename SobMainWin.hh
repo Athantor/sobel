@@ -128,7 +128,12 @@ class SobMainWin: public QMainWindow
 	private:
 		void canny_edge_trace( QImage &, uint8_t, uint64_t, uint64_t,
 				std::pair<int8_t, int8_t>, const std::vector<std::vector<
-						uint8_t> > &, const std::vector<std::vector<uint64_t> > &, const uint64_t, const uint64_t );
+						uint8_t> > &,
+				const std::vector<std::vector<uint64_t> > &, const uint64_t,
+				const uint64_t );
+		void canny_supr_nonmax( QImage &, uint8_t, uint64_t, uint64_t, std::pair<
+				int8_t, int8_t>, const std::vector<std::vector<uint8_t> > &,
+				const std::vector<std::vector<uint64_t> > &, const uint64_t );
 		uint64_t canny_et_mkrowcol( uint64_t, uint64_t, int8_t, bool & ) const;
 
 	private slots:
