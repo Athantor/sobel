@@ -497,7 +497,7 @@ boost::shared_ptr<SobMainWin::hought_t> SobMainWin::Hough_tm(bool d, uint rad) {
 
 					if ((x0 > 0) and (x0 < out_im -> width()) and (y0 > 0)
 							and (y0 < out_im -> height())) {
-						acc[static_cast<size_t>(x0)][static_cast<size_t>(y0)]++;
+						acc[static_cast<size_t> (x0)][static_cast<size_t> (y0)]++;
 						//std::cout << x0 << " " << y0 << "; " << x0  + y0 * out_im -> width()<< std::endl;
 					}
 				}
@@ -597,7 +597,8 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads(bool) {
 	vgrad_t vgradx(out_im->width(), vgrad_t::value_type(out_im->height()));
 	vgrad_t vgrady(out_im->width(), vgrad_t::value_type(out_im->height()));
 
-	boost::shared_ptr<grad_t> rp(new grad_t(gt_x, gt_y, igt, std::make_pair(vgradx, vgrady)));
+	boost::shared_ptr<grad_t> rp(new grad_t(gt_x, gt_y, igt, std::make_pair(
+			vgradx, vgrady)));
 
 	std::fill(gt_x.get(), gt_x.get() + out_im -> height(), 0);
 	std::fill(gt_y.get(), gt_y.get() + out_im -> width(), 0);
@@ -628,8 +629,8 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads(bool) {
 				}
 			}
 
-			rp -> get<3>().first[x][y] = sumx;
-			rp -> get<3>().second[x][y] = sumy;
+			rp -> get<3> ().first[x][y] = sumx;
+			rp -> get<3> ().second[x][y] = sumy;
 
 			if (sumx > 255)
 				sumx = 255;
@@ -645,8 +646,6 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads(bool) {
 			ygrad.setPixel(x, y, QColor(sumy, sumy, sumy).rgb());
 		}
 	}
-
-
 
 	for (int y = 0; y < out_im -> height(); y++) {
 		gt_x[y] = 0;
@@ -696,7 +695,7 @@ void SobMainWin::Canny_ed(bool d) {
 	Gauss_blur(false);
 	//	Otsus_bin(false);
 
-	vgrads_t xygrads = Make_grads(false) -> get<3>();
+	vgrads_t xygrads = Make_grads(false) -> get<3> ();
 
 	QImage tmpi(*out_im);
 
@@ -704,9 +703,6 @@ void SobMainWin::Canny_ed(bool d) {
 			255);
 	const uint thd2 = QInputDialog::getInt(this, "threshold", "thd2", 30, 0,
 			255);
-
-//	int8_t SGx[3][3] = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
-//	int8_t SGy[3][3] = { { 1, 2, 1 }, { 0, 0, 0 }, { -1, -2, -1 } };
 
 	qpd.setMaximum((tmpi.height() * tmpi.width()) * 4);
 	ulong ctr = 0;
@@ -719,10 +715,11 @@ void SobMainWin::Canny_ed(bool d) {
 
 			qpd.setValue(ctr++);
 
-			vgrad_t::value_type::value_type gx = xygrads.first[x][y], gy = xygrads.second[x][y];
+			vgrad_t::value_type::value_type gx = xygrads.first[x][y], gy =
+					xygrads.second[x][y];
 
-			grad[x][y] = static_cast<ulong>(std::sqrt(std::pow((double) gx, 2.0) + std::pow(gy,
-					2.0)));
+			grad[x][y] = static_cast<ulong> (std::sqrt(std::pow((double) gx,
+					2.0) + std::pow(gy, 2.0)));
 
 			const double thisAngle = (std::atan2(gx, gy) / M_PI) * 180.0;
 			uint8_t newAngle = 0;
@@ -917,7 +914,8 @@ void SobMainWin::canny_supr_nonmax(QImage &qi, uint8_t dir, uint64_t row,
 	}
 
 	for (uint64_t ctr = 0; ctr < nmaxctr; ++ctr) {
-		qi.setPixel(static_cast<int>(nmax[ctr][0]), static_cast<int>(nmax[ctr][1]), qRgb(255, 255, 255));
+		qi.setPixel(static_cast<int> (nmax[ctr][0]),
+				static_cast<int> (nmax[ctr][1]), qRgb(255, 255, 255));
 	}
 
 }
