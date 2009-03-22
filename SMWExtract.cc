@@ -18,8 +18,7 @@
 
 #include "SobMainWin.hh"
 
-boost::shared_ptr<SobMainWin::feat_t> SobMainWin::Make_feats( bool )
-{
+boost::shared_ptr<SobMainWin::feat_t> SobMainWin::Make_feats(bool) {
 	boost::shared_ptr<SobMainWin::grad_t> g = Make_grads(true);
 	gradarr_t gt_x = g -> get<0> ();
 	gradarr_t gt_y = g -> get<1> ();
@@ -71,9 +70,11 @@ boost::shared_ptr<SobMainWin::feat_t> SobMainWin::Make_feats( bool )
 			- my[0]) / 5.0), gt_x.get() + mx[3] + 1 + static_cast<int> ((my[3]
 			- my[0]) / 3.0)) - gt_x.get(); //mouth
 
+
 	mx[5] = std::max_element(gt_x.get() + mx[4] + static_cast<int> (((mx[3]
 			- mx[0]) * 0.8)), gt_x.get() + mx[4] + static_cast<int> (((mx[3]
 			- mx[0]) * 1.2))) - gt_x.get(); //chin
+
 
 	rp -> get<3> () = centr;
 	rp -> get<4> () = mx[2] + ((mx[5] - mx[2]) / 2);
@@ -81,8 +82,7 @@ boost::shared_ptr<SobMainWin::feat_t> SobMainWin::Make_feats( bool )
 	return rp;
 }
 
-boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht( bool d )
-{
+boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht(bool d) {
 	this -> setCursor(Qt::WaitCursor);
 
 	QImage inim_bak(*in_im);
@@ -117,16 +117,16 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht( bool d )
 	hought_t::iterator it = left_eye -> begin();
 	uint sumax = 0;
 	uint sumay = 0;
-	while(it != left_eye -> end())
-	{
-		sumax += (it -> get<0> () );
-		sumay += (it -> get<1> () );
+	while (it != left_eye -> end()) {
+		sumax += (it -> get<0> ());
+		sumay += (it -> get<1> ());
 
 		it++;
 	}
 
-	rp -> get<0>() = QPoint( ((ALEP.x() - EWW) + (sumax / left_eye -> size()) ) - AEH / 2,
-			((ALEP.y() - EWH) + (sumay / left_eye -> size())) + AEH / 2);
+	rp -> get<0> () = QPoint(((ALEP.x() - EWW) + (sumax / left_eye -> size()))
+			- AEH / 2, ((ALEP.y() - EWH) + (sumay / left_eye -> size())) + AEH
+			/ 2);
 
 	// right eye
 
@@ -139,28 +139,30 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht( bool d )
 	it = right_eye -> begin();
 	sumax = 0;
 	sumay = 0;
-	while(it != right_eye -> end())
-	{
-		sumax += (it -> get<0> () );
-		sumay += (it -> get<1> () );
+	while (it != right_eye -> end()) {
+
+		uint lx = it -> get<0> (), ly = it -> get<1> ();
+
+		sumax += lx;
+		sumay += ly;
 
 		it++;
 	}
 
-	rp -> get<1>() = QPoint( ((AREP.x() - EWW) + (sumax / right_eye -> size())) - AEH / 4,
-			((AREP.y() - EWH) + (sumay / right_eye -> size())) + AEH / 2);
+	rp -> get<1> () = QPoint(((AREP.x() - EWW) + (sumax / right_eye -> size()))
+			- AEH / 4, ((AREP.y() - EWH) + (sumay / right_eye -> size())) + AEH
+			/ 2);
 
 	QImage tmp1(inim_bak);
-	if(!d)
-	{
+	if (!d) {
 		QPainter qp(&tmp1);
 		qp.setPen("red");
 		QFont qf("monospace");
 		qf.setPixelSize(AEH);
 		qp.setFont(qf);
 
-		qp.drawText(rp -> get<0>(), "X");
-		qp.drawText(rp -> get<1>(), "X");
+		qp.drawText(rp -> get<0> (), "X");
+		qp.drawText(rp -> get<1> (), "X");
 	}
 
 	this -> setCursor(Qt::ArrowCursor);
@@ -168,8 +170,11 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht( bool d )
 	out_im.reset(new QImage(tmp1));
 	Display_imgs();
 
-	rp -> get<2>() = AEW;
-	rp -> get<3>() = AEH;
+	rp -> get<2> () = AEW;
+	rp -> get<3> () = AEH;
+
+	rp -> get<4> () = ALEP;
+	rp -> get<5> () = AREP;
 
 	return rp;
 }

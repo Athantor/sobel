@@ -440,6 +440,9 @@ void SobMainWin::Disp_eyes_ht( bool d )
 	qp.drawText(eyes -> get<0>(), "X");
 	qp.drawText(eyes -> get<1>(), "X");
 
+	qp.setPen("magenta");
+	qp.drawText(eyes -> get<4>(), "+");
+	qp.drawText(eyes -> get<5>(), "+");
 
 	out_im.reset(new QImage(tmp));
 	if(!d)
