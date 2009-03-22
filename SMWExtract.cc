@@ -104,15 +104,15 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht(bool d) {
 	const uint FWDH = ftrs -> get<1> ()[3] - ftrs -> get<1> ()[1]; //face width
 	const uint FHGT = ftrs -> get<0> ()[5] - ftrs -> get<0> ()[2]; //face height
 
-	const uint EWW = FWDH * (EWPCT / 100.0); // Eye window width
-	const uint EWH = FHGT * (EHPCT / 100.0); // Eye window height
+	const uint EWW = static_cast<int>(FWDH * (EWPCT / 100.0)); // Eye window width
+	const uint EWH = static_cast<int>(FHGT * (EHPCT / 100.0)); // Eye window height
 
 
 	//left eye
 
 	out_im.reset(new QImage(out_im -> copy(ALEP.x() - EWW, ALEP.y() - EWH, EWW
 			* 2, EWH * 2)));
-	boost::shared_ptr<hought_t> left_eye = Hough_tm(true, AEH);
+	boost::shared_ptr<hought_t> left_eye = Hough_tm(true, static_cast<int>(AEH));
 
 	hought_t::iterator it = left_eye -> begin();
 	uint sumax = 0;
@@ -124,9 +124,9 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht(bool d) {
 		it++;
 	}
 
-	rp -> get<0> () = QPoint(((ALEP.x() - EWW) + (sumax / left_eye -> size()))
-			- AEH / 2, ((ALEP.y() - EWH) + (sumay / left_eye -> size())) + AEH
-			/ 2);
+	rp -> get<0> () = QPoint( static_cast<int>(((ALEP.x() - EWW) + (sumax / left_eye -> size()))
+			- AEH / 2), static_cast<int>(((ALEP.y() - EWH) + (sumay / left_eye -> size())) + AEH
+			/ 2));
 
 	// right eye
 
@@ -134,7 +134,7 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht(bool d) {
 	Prep_to_extr(true, 1, 1);
 	out_im.reset(new QImage(out_im -> copy(AREP.x() - EWW, AREP.y() - EWH, EWW
 			* 2, EWH * 2)));
-	boost::shared_ptr<hought_t> right_eye = Hough_tm(true, AEH);
+	boost::shared_ptr<hought_t> right_eye = Hough_tm(true, static_cast<ulong>(AEH));
 
 	it = right_eye -> begin();
 	sumax = 0;
@@ -149,16 +149,16 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht(bool d) {
 		it++;
 	}
 
-	rp -> get<1> () = QPoint(((AREP.x() - EWW) + (sumax / right_eye -> size()))
-			- AEH / 4, ((AREP.y() - EWH) + (sumay / right_eye -> size())) + AEH
-			/ 2);
+	rp -> get<1> () = QPoint( static_cast<int>(((AREP.x() - EWW) + (sumax / right_eye -> size()))
+			- AEH / 4), static_cast<int>(((AREP.y() - EWH) + (sumay / right_eye -> size())) + AEH
+			/ 2));
 
 	QImage tmp1(inim_bak);
 	if (!d) {
 		QPainter qp(&tmp1);
 		qp.setPen("red");
 		QFont qf("monospace");
-		qf.setPixelSize(AEH);
+		qf.setPixelSize(static_cast<int>(AEH));
 		qp.setFont(qf);
 
 		qp.drawText(rp -> get<0> (), "X");

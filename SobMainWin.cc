@@ -434,7 +434,7 @@ void SobMainWin::Disp_eyes_ht( bool d )
 	QPainter qp(&tmp);
 	qp.setPen("red");
 	QFont qf("monospace");
-	qf.setPixelSize(eyes -> get<3>());
+	qf.setPixelSize(static_cast<int>(eyes -> get<3>()));
 	qp.setFont(qf);
 
 	qp.drawText(eyes -> get<0>(), "X");
