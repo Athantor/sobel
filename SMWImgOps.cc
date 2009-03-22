@@ -609,6 +609,9 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads(bool) {
 
 	igrads_t igt;
 	vgrads_t vgt;
+
+	vgt = std::make_pair(new int64_t[in_im->width()], new int64_t[in_im->height()]);
+
 	boost::shared_ptr<grad_t> rp(new grad_t(gt_x, gt_y, igt, vgt));
 
 	std::fill(gt_x.get(), gt_x.get() + out_im -> height(), 0);
