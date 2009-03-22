@@ -696,7 +696,7 @@ void SobMainWin::Canny_ed(bool d) {
 	Gauss_blur(false);
 	//	Otsus_bin(false);
 
-	boost::shared_ptr<SobMainWin::grad_t> xygrads = Make_grads(false);
+	vgrads_t xygrads = Make_grads(false) -> get<3>();
 
 	QImage tmpi(*out_im);
 
@@ -705,8 +705,8 @@ void SobMainWin::Canny_ed(bool d) {
 	const uint thd2 = QInputDialog::getInt(this, "threshold", "thd2", 30, 0,
 			255);
 
-	int8_t SGx[3][3] = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
-	int8_t SGy[3][3] = { { 1, 2, 1 }, { 0, 0, 0 }, { -1, -2, -1 } };
+//	int8_t SGx[3][3] = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
+//	int8_t SGy[3][3] = { { 1, 2, 1 }, { 0, 0, 0 }, { -1, -2, -1 } };
 
 	qpd.setMaximum((tmpi.height() * tmpi.width()) * 4);
 	ulong ctr = 0;
@@ -719,17 +719,7 @@ void SobMainWin::Canny_ed(bool d) {
 
 			qpd.setValue(ctr++);
 
-			int gx = 0, gy = 0;
-			for (char sox = -1; sox <= 1; sox++) {
-				for (char soy = -1; soy <= 1; soy++) {
-					QRgb mspx = tmpi.pixel(x + sox, y + soy);
-					gx += qRed(mspx) * SGx[sox + 1][soy + 1];
-					gy += qRed(mspx) * SGy[sox + 1][soy + 1];
-				}
-			}
-
-			//		const ulong gx = qRed(xygrads -> get<2> ().first->pixel(x, y));
-			//	const ulong gy = qRed(xygrads -> get<2> ().second->pixel(x, y));
+			vgrad_t::value_type::value_type gx = xygrads.first[x][y], gy = xygrads.second[x][y];
 
 			grad[x][y] = static_cast<ulong>(std::sqrt(std::pow((double) gx, 2.0) + std::pow(gy,
 					2.0)));
