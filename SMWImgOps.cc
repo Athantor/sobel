@@ -267,17 +267,8 @@ void SobMainWin::Sobel_op(bool d) {
 	if (mwin_ui -> checkBox -> isEnabled())
 		Smooth();
 
-	// Gamma(0.5);
-
-
-	int8_t Gx[3][3] = { { -1, 0, 1 }, { -2, 0, 2 }, { -1, 0, 1 } };
-	int8_t Gy[3][3] = { { 1, 2, 1 }, { 0, 0, 0 }, { -1, -2, -1 } };
-
+	vgrads_t grads = Make_grads(false)-> get<3> ();
 	boost::scoped_ptr<QImage> tmp(new QImage(*out_im));
-
-	// Scharr
-	// int8_t Gx[3][3] = { {3,10,3}, {0,0,0}, {-3,-10,-3} };
-	// int8_t Gy[3][3] = { {3,0,-3}, {10,0,-10} , {3,0,-3} };
 
 	int sumx = 0, sumy = 0, sum = 0;
 
@@ -290,14 +281,9 @@ void SobMainWin::Sobel_op(bool d) {
 			} else if ((x == 0) or (x + 1 >= in_im -> width())) {
 				sum = 0;
 			} else {
-				for (int i = -1; i <= 1; i++) {
-					for (int j = -1; j <= 1; j++) {
-						QRgb mspx = tmp -> pixel(x + i, y + j);
 
-						sumx += qRed(mspx) * Gx[i + 1][j + 1];
-						sumy += qRed(mspx) * Gy[i + 1][j + 1];
-					}
-				}
+				sumx = grads.first[x][y];
+				sumy = grads.second[x][y];
 
 				//	sum = std::abs(sumx) + std::abs(sumy);
 				sum = static_cast<int> (255 - std::sqrt(std::pow(sumx, 2.0)
@@ -548,7 +534,6 @@ boost::shared_ptr<SobMainWin::hought_t> SobMainWin::Hough_tm(bool d, uint rad) {
 						broke = true;
 						break;
 					}
-
 				}
 
 				if (broke) {
@@ -610,7 +595,10 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads(bool) {
 	igrads_t igt;
 	vgrads_t vgt;
 
-	vgt = std::make_pair(new int64_t[in_im->width()], new int64_t[in_im->height()]);
+	vgrad_t vgradx(out_im->width(), vgrad_t::value_type(out_im->height()));
+	vgrad_t vgrady(out_im->width(), vgrad_t::value_type(out_im->height()));
+
+	vgt = std::make_pair(vgradx, vgrady);
 
 	boost::shared_ptr<grad_t> rp(new grad_t(gt_x, gt_y, igt, vgt));
 
@@ -635,31 +623,33 @@ boost::shared_ptr<SobMainWin::grad_t> SobMainWin::Make_grads(bool) {
 			} else {
 				for (int i = -1; i <= 1; i++) {
 					for (int j = -1; j <= 1; j++) {
-						sumx += (qBlue(out_im -> pixel(x + i, y + j)) * Gx[i
-								+ 1][j + 1]);
-						sumy += (qBlue(out_im -> pixel(x + i, y + j)) * Gy[i
-								+ 1][j + 1]);
+						QRgb mspx = out_im -> pixel(x + i, y + j);
+
+						sumx += qRed(mspx) * Gx[i + 1][j + 1];
+						sumy += qRed(mspx) * Gy[i + 1][j + 1];
 					}
 				}
-
-				vgt.first[x] = sumx;
-				vgt.second[y] = sumy;
-
-				if (sumx > 255)
-					sumx = 255;
-				if (sumx < 0)
-					sumx = 0;
-
-				if (sumy > 255)
-					sumy = 255;
-				if (sumy < 0)
-					sumy = 0;
 			}
+
+			rp -> get<3>().first[x][y] = sumx;
+			rp -> get<3>().second[x][y] = sumy;
+
+			if (sumx > 255)
+				sumx = 255;
+			if (sumx < 0)
+				sumx = 0;
+
+			if (sumy > 255)
+				sumy = 255;
+			if (sumy < 0)
+				sumy = 0;
 
 			xgrad.setPixel(x, y, QColor(sumx, sumx, sumx).rgb());
 			ygrad.setPixel(x, y, QColor(sumy, sumy, sumy).rgb());
 		}
 	}
+
+
 
 	for (int y = 0; y < out_im -> height(); y++) {
 		gt_x[y] = 0;

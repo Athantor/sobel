@@ -70,7 +70,9 @@ public:
 	typedef boost::shared_array<int64_t> gradarr_t;
 	typedef std::pair<boost::shared_ptr<QImage>, boost::shared_ptr<QImage> >
 			igrads_t; //x-grad img, y-grad img
-	typedef std::pair<gradarr_t, gradarr_t> vgrads_t; // raw: x-grad vals, y-grad vals
+	//typedef boost::shared_array< gradarr_t > vgrad_t; //grad of [x][y]
+	typedef std::vector<std::vector<int64_t> > vgrad_t;
+	typedef std::pair<vgrad_t, vgrad_t> vgrads_t; // raw: x-grad vals, y-grad vals
 	typedef boost::tuple<gradarr_t, gradarr_t, igrads_t, vgrads_t> grad_t; //grad-x, grad-y, grad images, grad vals
 
 	typedef gradarr_t featarr_t;
@@ -78,7 +80,7 @@ public:
 	//			y-max: left 1st max, l 2nd m, right 1st m, r 2nd m
 	//			x-max: eye line, eye brows, hair, nose, mouth, chin
 
-	typedef boost::tuple<QPoint, QPoint, double, double> eyeloc_t; // left eye, right eye, eye width, eye height
+	typedef boost::tuple<QPoint, QPoint, double, double, QPoint, QPoint> eyeloc_t; // left eye, right eye, eye width, eye height, ALEP, AREP
 	typedef std::list<boost::tuple<uint, uint, uint> > hought_t; // x, y, val
 private:
 	boost::scoped_ptr<Ui::MainWindow> mwin_ui;
