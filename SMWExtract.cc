@@ -18,7 +18,8 @@
 
 #include "SobMainWin.hh"
 
-boost::shared_ptr<SobMainWin::feat_t> SobMainWin::Make_feats(bool) {
+boost::shared_ptr<SobMainWin::feat_t> SobMainWin::Make_feats( bool )
+{
 	boost::shared_ptr<SobMainWin::grad_t> g = Make_grads(true);
 	gradarr_t gt_x = g -> get<0> ();
 	gradarr_t gt_y = g -> get<1> ();
@@ -82,7 +83,8 @@ boost::shared_ptr<SobMainWin::feat_t> SobMainWin::Make_feats(bool) {
 	return rp;
 }
 
-boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht(bool d) {
+boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht( bool d )
+{
 	this -> setCursor(Qt::WaitCursor);
 
 	QImage inim_bak(*in_im);
@@ -104,29 +106,31 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht(bool d) {
 	const uint FWDH = ftrs -> get<1> ()[3] - ftrs -> get<1> ()[1]; //face width
 	const uint FHGT = ftrs -> get<0> ()[5] - ftrs -> get<0> ()[2]; //face height
 
-	const uint EWW = static_cast<int>(FWDH * (EWPCT / 100.0)); // Eye window width
-	const uint EWH = static_cast<int>(FHGT * (EHPCT / 100.0)); // Eye window height
+	const uint EWW = static_cast<int> (FWDH * (EWPCT / 100.0)); // Eye window width
+	const uint EWH = static_cast<int> (FHGT * (EHPCT / 100.0)); // Eye window height
 
 
 	//left eye
 
 	out_im.reset(new QImage(out_im -> copy(ALEP.x() - EWW, ALEP.y() - EWH, EWW
 			* 2, EWH * 2)));
-	boost::shared_ptr<hought_t> left_eye = Hough_tm(true, static_cast<int>(AEH));
+	boost::shared_ptr<hought_t> left_eye = Hough_tm(true,
+			static_cast<int> (AEH));
 
 	hought_t::iterator it = left_eye -> begin();
 	uint sumax = 0;
 	uint sumay = 0;
-	while (it != left_eye -> end()) {
+	while(it != left_eye -> end())
+	{
 		sumax += (it -> get<0> ());
 		sumay += (it -> get<1> ());
 
 		it++;
 	}
 
-	rp -> get<0> () = QPoint( static_cast<int>(((ALEP.x() - EWW) + (sumax / left_eye -> size()))
-			- AEH / 2), static_cast<int>(((ALEP.y() - EWH) + (sumay / left_eye -> size())) + AEH
-			/ 2));
+	rp -> get<0> () = QPoint(static_cast<int> (((ALEP.x() - EWW) + (sumax
+			/ left_eye -> size())) - AEH / 2), static_cast<int> (((ALEP.y()
+			- EWH) + (sumay / left_eye -> size())) + AEH / 2));
 
 	// right eye
 
@@ -134,12 +138,14 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht(bool d) {
 	Prep_to_extr(true, 1, 1);
 	out_im.reset(new QImage(out_im -> copy(AREP.x() - EWW, AREP.y() - EWH, EWW
 			* 2, EWH * 2)));
-	boost::shared_ptr<hought_t> right_eye = Hough_tm(true, static_cast<ulong>(AEH));
+	boost::shared_ptr<hought_t> right_eye = Hough_tm(true,
+			static_cast<ulong> (AEH));
 
 	it = right_eye -> begin();
 	sumax = 0;
 	sumay = 0;
-	while (it != right_eye -> end()) {
+	while(it != right_eye -> end())
+	{
 
 		uint lx = it -> get<0> (), ly = it -> get<1> ();
 
@@ -149,20 +155,22 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht(bool d) {
 		it++;
 	}
 
-	rp -> get<1> () = QPoint( static_cast<int>(((AREP.x() - EWW) + (sumax / right_eye -> size()))
-			- AEH / 4), static_cast<int>(((AREP.y() - EWH) + (sumay / right_eye -> size())) + AEH
-			/ 2));
+	rp -> get<1> () = QPoint(static_cast<int> (((AREP.x() - EWW) + (sumax
+			/ right_eye -> size())) - AEH / 4), static_cast<int> (((AREP.y()
+			- EWH) + (sumay / right_eye -> size())) + AEH / 2));
 
 	QImage tmp1(inim_bak);
-	if (!d) {
+	if(!d)
+	{
 		QPainter qp(&tmp1);
 		qp.setPen("red");
 		QFont qf("monospace");
-		qf.setPixelSize(static_cast<int>(AEH));
+		qf.setPixelSize(static_cast<int> (AEH));
 		qp.setFont(qf);
 
 		qp.drawText(rp -> get<0> (), "X");
 		qp.drawText(rp -> get<1> (), "X");
+
 	}
 
 	this -> setCursor(Qt::ArrowCursor);
@@ -177,4 +185,93 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht(bool d) {
 	rp -> get<5> () = AREP;
 
 	return rp;
+}
+
+void SobMainWin::Face_find_cs( bool d )
+{
+	QImage bak(*out_im);
+
+	To_gray(false);
+	Gauss_blur(false);
+	Otsus_bin(false);
+	boost::shared_ptr<grad_t> g = Make_grads(d);
+	ptrdiff_t lx, rx, ly, ry;
+
+	int avgx, avgy;
+
+	gradarr_t gx = g->get<0> ();
+	gradarr_t gy = g->get<1> ();
+
+	avgx = std::accumulate(gx.get(), gx.get() + out_im->height(), 0)
+			/ out_im->height();
+
+	lx = std::find_if(gx.get(), gx.get() + out_im->height(), std::bind2nd(
+			std::greater<int>(), avgx)) - gx.get();
+	rx = std::find_if(gx.get() + ((out_im->height() / 4) * 3), gx.get()
+			+ out_im->height(), std::bind2nd(std::greater<int>(), avgx))
+			- gx.get();
+
+	avgy = std::accumulate(gy.get(), gy.get() + out_im->width(), 0)
+			/ out_im->width();
+
+	ly = std::find_if(gy.get(), gy.get() + out_im->width(), std::bind2nd(
+			std::greater<int>(), avgy)) - gy.get();
+	ry = std::find_if(gy.get() + ((out_im->width() / 4) * 3), gy.get()
+			+ out_im->width(), std::bind2nd(std::greater<int>(), avgy))
+			- gy.get();
+
+	QPainter qp(&bak);
+
+	/*QFont qf("monospace");
+	qf.setPixelSize(static_cast<int> ((rx-lx) / 14));
+	qp.setFont(qf);
+	QPen pen("red");
+	pen.setWidth(3);
+
+	qp.setPen(pen);
+	qp.drawLine(0, lx, out_im->width(), lx);
+
+	pen.setColor("orange");
+	qp.setPen(pen);
+	qp.drawLine(0, rx, out_im->width(), rx);
+
+	pen.setColor("cyan");
+	qp.setPen(pen);
+	qp.drawLine(ly, 0, ly, out_im->height());
+
+	pen.setColor("magenta");
+		qp.setPen(pen);
+	qp.drawLine(ry, 0, ry, out_im->height());
+
+	qp.setPen("white");
+
+	qp.drawText(0, lx, QString("lx: %1").arg(lx));
+	qp.drawText(0, rx, QString("rx: %1").arg(rx));
+
+	qp.translate(ly, out_im->height()/2);
+	qp.rotate(-90);
+
+	qp.drawText(0,  0, QString("ly: %1").arg(ly));
+
+	qp.resetTransform();
+	qp.translate(ry, out_im->height()/2);
+	qp.rotate(-90);
+	qp.drawText(0,  0, QString("ry: %1").arg(ry));
+
+	qp.resetTransform();*/
+
+	QPen p = QPen("red");
+	p.setWidth(3);
+	p.setStyle(Qt::DashLine);
+	qp.setPen(p);
+	qp.drawRect(ly, lx, ry -ly, rx-lx);
+
+	//qp.rotate(90);
+
+	qp.end();
+
+	out_im.reset(new QImage(bak));
+	if(!d)
+		Display_imgs();
+
 }

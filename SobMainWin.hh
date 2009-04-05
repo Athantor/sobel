@@ -30,6 +30,7 @@
 #include <list>
 #include <functional>
 #include <limits>
+#include <numeric>
 
 #include <boost/scoped_ptr.hpp>
 #include <boost/scoped_array.hpp>
@@ -149,18 +150,23 @@ private slots:
 	boost::shared_ptr<hought_t> Hough_tm(bool, uint = 30);
 	void Do_enables(bool);
 	void Display_imgs();
-	void Prep_to_extr(bool, uint = 3, bool = false);
+	void Prep_to_extr(bool, uint = 3, bool = false, bool = false);
 	boost::shared_ptr<grad_t> Make_grads(bool);
 	boost::shared_ptr<feat_t> Make_feats(bool);
 
 	boost::shared_ptr<SobMainWin::eyeloc_t> Find_iris_ht(bool);
+
+	void Face_find_cs(bool);
 
 	void Set_gamma_lbl(int);
 
 	void Disp_grad(bool);
 	void Disp_feat(bool);
 	void Disp_eyes_ht(bool);
+	void Disp_eyes_sob(bool);
+
 	void Crop_face(bool);
+
 
 	void Do_auto(bool);
 

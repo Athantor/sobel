@@ -69,7 +69,7 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>59</width>
+      <width>74</width>
       <height>511</height>
      </rect>
     </property>
@@ -210,7 +210,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOp">
@@ -255,9 +255,23 @@
      <property name="title">
       <string>Cechy</string>
      </property>
+     <widget class="QMenu" name="menuOczy">
+      <property name="title">
+       <string>Oczy</string>
+      </property>
+      <addaction name="actionOczy_houghem"/>
+      <addaction name="actionOczy_sobelem"/>
+     </widget>
      <addaction name="actionMaska_gradient_w"/>
-     <addaction name="actionOczy_houghem"/>
+     <addaction name="menuOczy"/>
     </widget>
+    <widget class="QMenu" name="menuZnajd">
+     <property name="title">
+      <string>Znajdź</string>
+     </property>
+     <addaction name="actionSegmentacja_koloru"/>
+    </widget>
+    <addaction name="menuZnajd"/>
     <addaction name="actionPrzytnij"/>
     <addaction name="menuCechy"/>
    </widget>
@@ -430,7 +444,25 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Oczy houghem</string>
+    <string>houghem</string>
+   </property>
+  </action>
+  <action name="actionSobelem">
+   <property name="text">
+    <string>sobelem</string>
+   </property>
+  </action>
+  <action name="actionOczy_sobelem">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>sobelem</string>
+   </property>
+  </action>
+  <action name="actionSegmentacja_koloru">
+   <property name="text">
+    <string>Segmentacja koloru</string>
    </property>
   </action>
  </widget>
