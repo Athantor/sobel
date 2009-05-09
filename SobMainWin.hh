@@ -168,12 +168,12 @@ private slots:
 	void Disp_eyes_sob(bool);
 
 	void Crop_face(bool);
-	void Crop_face_manual(bool);
+	//void Crop_face_manual(bool);
 
 
 	void Do_auto(bool);
 
-	virtual void mouseReleaseEvent ( QMouseEvent * );
+	//virtual void mouseReleaseEvent ( QMouseEvent * );
 
 };
 

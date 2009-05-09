@@ -20,9 +20,7 @@
 
 SobelApp::SobelApp(int & c, char ** v) : QApplication(c, v), mwin(new SobMainWin()) /*in_im(new QImage()), out_im(0)*/
 {
-
     mwin -> show();
-
 }
 
 SobelApp::~SobelApp()
