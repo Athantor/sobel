@@ -56,6 +56,7 @@
 #include <QFile>
 #include <QDateTime>
 #include <QInputDialog>
+#include <QMouseEvent>
 
 #include <QPainter>
 
@@ -92,6 +93,7 @@ private:
 
 	bool sobel;
 	bool bin;
+	char kropuj;
 
 	const double XTOLPCT;
 	const double YTOLPCT;
@@ -166,9 +168,12 @@ private slots:
 	void Disp_eyes_sob(bool);
 
 	void Crop_face(bool);
+	void Crop_face_manual(bool);
 
 
 	void Do_auto(bool);
+
+	virtual void mouseReleaseEvent ( QMouseEvent * );
 
 };
 
