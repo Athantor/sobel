@@ -149,6 +149,8 @@ private slots:
 	void Sobel_op(bool);
 	void Canny_ed(bool);
 
+	void Approx_eyes_with_otsu(QPoint &, QPoint &);
+
 	boost::shared_ptr<hought_t> Hough_tm(bool, uint = 30);
 	void Do_enables(bool);
 	void Display_imgs();
@@ -166,6 +168,7 @@ private slots:
 	void Disp_feat(bool);
 	void Disp_eyes_ht(bool);
 	void Disp_eyes_sob(bool);
+	void Disp_eyes_otsu(bool);
 
 	void Crop_face(bool);
 	//void Crop_face_manual(bool);

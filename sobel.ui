@@ -261,6 +261,7 @@
       </property>
       <addaction name="actionOczy_houghem"/>
       <addaction name="actionOczy_sobelem"/>
+      <addaction name="actionOtsuem"/>
      </widget>
      <addaction name="actionMaska_gradient_w"/>
      <addaction name="menuOczy"/>
@@ -463,6 +464,14 @@
   <action name="actionSegmentacja_koloru">
    <property name="text">
     <string>Segmentacja koloru</string>
+   </property>
+  </action>
+  <action name="actionOtsuem">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>otsuem</string>
    </property>
   </action>
  </widget>
