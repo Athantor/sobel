@@ -35,7 +35,7 @@ boost::shared_ptr<SobMainWin::feat_t> SobMainWin::Make_feats( bool )
 
 	const int YWDT = static_cast<int> (((out_im -> width()) * (YTOLPCT / 100.0))); // Y tolerance
 
-	// eye line: looking in space between 1/4 and 3/4 image's height
+	// eye line: looking in space between 2/5 and 3/5 image's height
 	mx[0] = Find_eyeline_el(out_im -> height() / 5 * 2, out_im -> height() / 5 * 3, gt_x);
 
 	my[1] = std::max_element(gt_y.get() + 5, gt_y.get() + (out_im -> width() / 3) + 1) - gt_y.get(); // outermost left max
@@ -80,8 +80,8 @@ boost::shared_ptr<SobMainWin::eyeloc_t> SobMainWin::Find_iris_ht( bool d )
 
 	boost::shared_ptr<feat_t> ftrs = Make_feats(true);
 	boost::shared_ptr<eyeloc_t> rp(new eyeloc_t());
-	const double AEW = (ftrs -> get<1> ()[3] - ftrs -> get<1> ()[1]) / 5.0; //Approx eye width
-	const double AEH = AEW * 0.37; //Approx eye height
+	const double AEW = (ftrs -> get<1> ()[3] - ftrs -> get<1> ()[1]) / 4.5; //Approx eye width
+	const double AEH = AEW * 0.45; //Approx eye height
 
 	const QPoint ALEP(ftrs -> get<1> ()[0], ftrs -> get<0> ()[0]); // Approximated left eye position
 	const QPoint AREP(ftrs -> get<1> ()[2], ftrs -> get<0> ()[0]); // Approximated right eye position

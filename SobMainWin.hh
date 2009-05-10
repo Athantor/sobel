@@ -84,6 +84,9 @@ public:
 
 	typedef boost::tuple<QPoint, QPoint, double, double, QPoint, QPoint> eyeloc_t; // left eye, right eye, eye width, eye height, ALEP, AREP
 	typedef std::list<boost::tuple<uint, uint, uint> > hought_t; // x, y, val
+
+	typedef boost::tuple<gradarr_t, gradarr_t, QPoint> vpf_s_t; //vpf_h, vpf_v, center
+	typedef boost::tuple<gradarr_t, gradarr_t, gradarr_t, gradarr_t> vpf_t; //vpf_h_l, vpf_v_l, vpf_h_r, vpf_v_r
 private:
 	boost::scoped_ptr<Ui::MainWindow> mwin_ui;
 
@@ -149,6 +152,9 @@ private slots:
 	void Sobel_op(bool);
 	void Canny_ed(bool);
 
+	boost::shared_ptr<vpf_s_t> Vpf_simple(const QPoint &, const QPoint&, double, double);
+	//boost::shared_ptr<vpf_t> Vpf(const eyeloc &);
+
 	void Approx_eyes_with_otsu(QPoint &, QPoint &);
 
 	boost::shared_ptr<hought_t> Hough_tm(bool, uint = 30);
@@ -169,6 +175,7 @@ private slots:
 	void Disp_eyes_ht(bool);
 	void Disp_eyes_sob(bool);
 	void Disp_eyes_otsu(bool);
+	void Disp_eyes_vpf(bool);
 
 	void Crop_face(bool);
 	//void Crop_face_manual(bool);

@@ -19,7 +19,7 @@
 #include "SobMainWin.hh"
 
 SobMainWin::SobMainWin() :
-	mwin_ui(new Ui::MainWindow()), sobel(false), bin(false), XTOLPCT(5.0), YTOLPCT(7.5)
+	mwin_ui(new Ui::MainWindow()), sobel(false), bin(false), XTOLPCT(5.0), YTOLPCT(8)
 {
 	mwin_ui -> setupUi(this);
 
@@ -58,12 +58,12 @@ void SobMainWin::connects()
 	connect(mwin_ui -> actionOczy_houghem, SIGNAL(triggered ( bool ) ), this, SLOT(Disp_eyes_ht(bool)));
 	connect(mwin_ui -> actionOczy_sobelem, SIGNAL(triggered ( bool ) ), this, SLOT(Disp_eyes_sob(bool)));
 	connect(mwin_ui -> actionOtsuem, SIGNAL(triggered ( bool ) ), this, SLOT(Disp_eyes_otsu(bool)));
+	connect(mwin_ui -> actionVPF, SIGNAL(triggered ( bool ) ), this, SLOT(Disp_eyes_vpf(bool)));
 
 	// connect(mwin_ui -> actionPrzytnij, SIGNAL(triggered ( bool ) ), this, SLOT(Crop_face(bool)) );
 	//connect(mwin_ui -> actionPrzytnij, SIGNAL(triggered ( bool ) ), this, SLOT(Crop_face_manual(bool)));
 
 	connect(mwin_ui -> verticalSlider, SIGNAL( sliderMoved ( int ) ), this, SLOT(Set_gamma_lbl(int)));
-
 
 }
 
@@ -113,6 +113,8 @@ void SobMainWin::Do_enables( bool e )
 	mwin_ui -> actionMaska_gradient_w -> setEnabled(e);
 	mwin_ui -> actionOczy_houghem -> setEnabled(e);
 	mwin_ui -> actionOtsuem -> setEnabled(e);
+	mwin_ui -> actionVPF -> setEnabled(e);
+
 	//mwin_ui -> actionPrzytnij -> setEnabled(e);
 	mwin_ui -> actionSegmentacja_koloru -> setEnabled(e);
 
@@ -427,53 +429,100 @@ void SobMainWin::Disp_eyes_ht( bool d )
 	qp.drawText((eyes -> get<0> () + eyes -> get<4> ()) / 2, "#");
 	qp.drawText((eyes -> get<1> () + eyes -> get<5> ()) / 2, "#");
 
+	QPoint p1, p2;
+	Approx_eyes_with_otsu(p1, p2);
+
+	qp.setPen("lime");
+
+	qp.drawText(p1, "o");
+	qp.drawText(p2, "o");
+
 	out_im.reset(new QImage(tmp));
 	if ( !d )
 		Display_imgs();
 }
 
 /*void SobMainWin::Crop_face_manual( bool )
-{
-	kropuj = 1;
-	mwin_ui -> label -> setCursor(Qt::CrossCursor);
-	mwin_ui -> label -> resize(mwin_ui -> label_2 -> pixmap() -> size());
-	//mwin_ui -> label_2 -> setPixmap(QPixmap::fromImage(out_im -> scaled(mwin_ui -> label -> size(), Qt::KeepAspectRatio, Qt::SmoothTransformation)));
-}*/
+ {
+ kropuj = 1;
+ mwin_ui -> label -> setCursor(Qt::CrossCursor);
+ mwin_ui -> label -> resize(mwin_ui -> label_2 -> pixmap() -> size());
+ //mwin_ui -> label_2 -> setPixmap(QPixmap::fromImage(out_im -> scaled(mwin_ui -> label -> size(), Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+ }*/
 
 /*void SobMainWin::mouseReleaseEvent( QMouseEvent * evt )
+ {
+
+ static QPoint p1, p2;
+ static QImage tmp;
+
+ if ( childAt(evt->pos()) and childAt(evt->pos()) == mwin_ui->label ) {
+ if ( kropuj == 1 ) {
+ p1 = evt->globalPos();
+ kropuj = 2;
+
+ tmp = *in_im;
+
+ QPainter qp(in_im.get());
+ qp.setPen("red");
+ QFont qf("monospace");
+ qf.setPixelSize(32);
+ qp.setFont(qf);
+
+ qp.drawText(p1, "X");
+
+ Display_imgs();
+
+ }
+
+ else if ( kropuj == 2 ) {
+ p2 = evt->globalPos();
+ kropuj = 0;
+
+ mwin_ui -> label -> setCursor(Qt::ArrowCursor);
+
+ in_im.reset( new QImage(tmp. copy(QRect(p1,p2)) . scaled(mwin_ui -> label -> size(), Qt::KeepAspectRatio, Qt::SmoothTransformation)) );
+ Display_imgs();
+
+ }
+ }
+ }*/
+
+void SobMainWin::Disp_eyes_vpf( bool d )
 {
+	QImage tmp(*out_im);
+	QPainter qp(&tmp);
+	qp.setPen("red");
+	QFont qf("monospace");
 
-	static QPoint p1, p2;
-	static QImage tmp;
+	boost::shared_ptr<eyeloc_t> el = Find_iris_ht(true);
+	boost::shared_ptr<grad_t> ftrs = Make_grads(false);
 
-	if ( childAt(evt->pos()) and childAt(evt->pos()) == mwin_ui->label ) {
-		if ( kropuj == 1 ) {
-			p1 = evt->globalPos();
-			kropuj = 2;
+    ptrdiff_t elx = Find_eyeline_el(out_im -> height() / 5 * 2, out_im -> height() / 5 * 3, ftrs->get<0> ());
 
-			tmp = *in_im;
+	boost::shared_ptr<vpf_s_t> vpf = Vpf_simple(el->get<0> (), el->get<4> (), el->get<2> (), el->get<3> ());
+	boost::shared_ptr<vpf_s_t> vpf1 = Vpf_simple(el->get<1> (), el->get<4> (), el->get<2> (), el->get<3> ());
 
-			QPainter qp(in_im.get());
-			qp.setPen("red");
-			QFont qf("monospace");
-			qf.setPixelSize(32);
-			qp.setFont(qf);
-
-			qp.drawText(p1, "X");
-
-			Display_imgs();
-
-		}
-
-		else if ( kropuj == 2 ) {
-			p2 = evt->globalPos();
-			kropuj = 0;
-
-			mwin_ui -> label -> setCursor(Qt::ArrowCursor);
-
-			in_im.reset( new QImage(tmp. copy(QRect(p1,p2)) . scaled(mwin_ui -> label -> size(), Qt::KeepAspectRatio, Qt::SmoothTransformation)) );
-			Display_imgs();
-
-		}
+	for ( int i = 0; i < std::ceil(el->get<3> ()); i++ ) {
+		std::cout << "vpfh [ " << i << "]: " << vpf->get<0> ()[i] << std::endl;
 	}
-}*/
+
+	for ( int i = 0; i < std::ceil(el->get<2> ()); i++ ) {
+		std::cout << "vpfv [ " << i << "]: " << vpf->get<1> ()[i] << std::endl;
+	}
+
+	qf.setPixelSize(el->get<3> ());
+	qp.setFont(qf);
+
+	qp.drawText(vpf->get<2> (), "X");
+	qp.drawText(vpf1->get<2> (), "X");
+
+	qp.drawRect(el->get<0> ().x(), elx - (el->get<3> () / 2), el->get<2> (), el->get<3> () );
+	qp.drawRect(el->get<1> ().x(), elx - (el->get<3> () / 2), el->get<2> (), el->get<3> () );
+
+
+	out_im.reset(new QImage(tmp));
+	if ( !d )
+		Display_imgs();
+
+}

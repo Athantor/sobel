@@ -262,6 +262,7 @@
       <addaction name="actionOczy_houghem"/>
       <addaction name="actionOczy_sobelem"/>
       <addaction name="actionOtsuem"/>
+      <addaction name="actionVPF"/>
      </widget>
      <addaction name="actionMaska_gradient_w"/>
      <addaction name="menuOczy"/>
@@ -472,6 +473,14 @@
    </property>
    <property name="text">
     <string>otsuem</string>
+   </property>
+  </action>
+  <action name="actionVPF">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>VPF</string>
    </property>
   </action>
  </widget>
